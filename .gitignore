@@ -21,3 +21,4 @@ node_modules
 resources/public
 lib/
 .lein-env
+dist/
