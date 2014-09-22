@@ -1,0 +1,8 @@
+<input placeholder="search" class="srch" ng-model="search"/>
+<div ng-repeat="entry in vs.entry | vsearch:search">
+  <a href="#/vs/{{$index}}"><h3>{{entry.content.name}}</h3></a>
+  <p>
+    {{entry.content.description}}
+  </p>
+  <hr/>
+</div>

@@ -1,0 +1,24 @@
+/target
+/classes
+/checkouts
+pom.xml
+pom.xml.asc
+*.jar
+*.swp
+*.class
+/.lein-*
+/.nrepl-port
+/resources/config.clj
+*sw?
+**/.#*
+**/#*#
+
+# JavaScript Single Page Application.
+.sass-cache
+.tmp
+app/bower_components
+dist
+node_modules
+resources/public
+lib/
+.lein-env
