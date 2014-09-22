@@ -66,6 +66,11 @@ app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
 
 app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
 
+  cs = [{}]
+  $scope.v = {definition: {concept: cs}}
+  $scope.addConcept = ()-> cs.push({})
+
+
 app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope, $sce) ->
   $scope.trusted = (h)-> $sce.trustAsHtml(h)
 

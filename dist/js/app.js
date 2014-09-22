@@ -78,7 +78,18 @@
 
   app.controller('WelcomeCtrl', function(menu, $scope, $http) {});
 
-  app.controller('NewValueSetCtrl', function(menu, $scope, $fhir) {});
+  app.controller('NewValueSetCtrl', function(menu, $scope, $fhir) {
+    var cs;
+    cs = [{}];
+    $scope.v = {
+      definition: {
+        concept: cs
+      }
+    };
+    return $scope.addConcept = function() {
+      return cs.push({});
+    };
+  });
 
   app.controller('ShowValueSetCtrl', function(menu, $routeParams, $scope, $rootScope, $sce) {
     var id, v;
@@ -97,7 +108,43 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('/src/views/valuesets/new.html',
-    "<h1> Create Value Set</h1>\n"
+    "<form class=\"form-horizontal\" role=\"form\">\n" +
+    "  <h3>ValueSet</h3>\n" +
+    "  <hr/>\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <label class=\"col-sm-2 control-label\">name</label>\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "      <input type=\"text\" class=\"form-control\" ng-model=\"v.name\" placeholder=\"name\">\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <label class=\"col-sm-2 control-label\">identifier</label>\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"id\" ng-model=\"v.identifier\">\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <h3>definition.concept</h3>\n" +
+    "  <hr/>\n" +
+    "  <div class=\"form-group\" ng-repeat=\"i in v.definition.concept\">\n" +
+    "    <div class=\"col-sm-2\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"code\" ng-model=\"i.code\">\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"description\" ng-model=\"i.description\">\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <hr/>\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <button type=\"submit\" ng-click=\"addConcept(i)\" class=\"btn btn-default pull-right\">Add</button>\n" +
+    "  </div>\n" +
+    "</form>\n" +
+    "\n" +
+    "\n" +
+    "<pre>\n" +
+    "{{v | json}}\n" +
+    "</pre>\n" +
+    "\n" +
+    "\n"
   );
 
 

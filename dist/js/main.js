@@ -78,7 +78,18 @@
 
   app.controller('WelcomeCtrl', function(menu, $scope, $http) {});
 
-  app.controller('NewValueSetCtrl', function(menu, $scope, $fhir) {});
+  app.controller('NewValueSetCtrl', function(menu, $scope, $fhir) {
+    var cs;
+    cs = [{}];
+    $scope.v = {
+      definition: {
+        concept: cs
+      }
+    };
+    return $scope.addConcept = function() {
+      return cs.push({});
+    };
+  });
 
   app.controller('ShowValueSetCtrl', function(menu, $routeParams, $scope, $rootScope, $sce) {
     var id, v;
