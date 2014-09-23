@@ -58,7 +58,7 @@ app.run ($rootScope, menu, $http)->
     console.log('hit')
     $rootScope.vs = JSON.parse(vs)
   else
-    $http(method: 'GET', url: '/valuesets/valuesets.json')
+    $http(method: 'GET', url: 'valuesets/valuesets.json')
       .success (data)->
         window.localStorage.setItem('vs', JSON.stringify(data))
         $rootScope.vs = data
