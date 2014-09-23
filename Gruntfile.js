@@ -96,6 +96,12 @@ module.exports = function (grunt) {
         src: '*',
         dest: buildDir + 'fonts/'
      },
+     img: {
+        cwd: 'src/imgs/',
+        expand: true,
+        src: '*',
+        dest: buildDir + 'imgs/'
+     },
      vss: {
         cwd: 'valuesets/',
         expand: true,

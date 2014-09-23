@@ -1,5 +1,5 @@
 {
-  "name": "fhirplace-spa-ui",
+  "name": "fhir-terminology",
   "version": "0.0.0",
   "dependencies": {
     "angular": "latest",
@@ -11,8 +11,7 @@
     "angular-route": "latest",
     "angular-animate": "latest",
     "components-font-awesome": "latest",
-    "angular-local-storage": "latest",
-    "angular-ui-codemirror": "latest",
+    "angular-ui-codemirror": "0.1.6",
     "ng-fhir": "latest"
   }
 }

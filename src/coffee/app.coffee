@@ -22,6 +22,8 @@ app = angular.module 'fhirface', [
       .otherwise
         redirectTo: '/'
 
+_rm = (x, xs)-> xs.filter (i)-> i != x
+
 app.filter 'vsearch', ()->
   (xs, str)->
     return xs unless str?
@@ -66,9 +68,16 @@ app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
 
 app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
 
-  cs = [{}]
-  $scope.v = {definition: {concept: cs}}
-  $scope.addConcept = ()-> cs.push({})
+  $scope.state = 'form'
+
+  cs ={concept: [{}]}
+  $scope.v = {definition: cs}
+  $scope.addConcept = ()-> cs.concept.push({})
+  $scope.rmConcept = (c)-> cs.concept = _rm(c, cs.concept)
+
+  wtc = ()->
+    $scope.vjson = angular.toJson($scope.v, true)
+  $scope.$watch 'v', wtc, true
 
 
 app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope, $sce) ->
@@ -78,5 +87,3 @@ app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope, $sce
   v = $scope.vs.entry[id]
   delete v.content.text
   $scope.v = v.content
-
-
