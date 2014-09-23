@@ -45,12 +45,12 @@
 </div>
 
 <div ng-show="state=='json'">
-  <pre>{{vjson}}</pre>
   <ui-codemirror
-    style="min-height: 1000px;"
-    ui-codemirror-opts="{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true}"
-    ui-refresh="state=='json'"
-    ng-model='vjson'/>
+  style="min-height: 1000px;"
+  ui-codemirror-opts="{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}"
+  ui-refresh="state=='json'"
+  ng-model='vjson'>
+  </ui-codemirror>
 </div>
 
 <div ng-show="state=='info'">

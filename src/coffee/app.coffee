@@ -67,8 +67,17 @@ app.run ($rootScope, menu, $http)->
 app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
 
 app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
+  # hack to fix code mirror
+  _editor = null
+  $scope.codemirror = (x)-> _editor = x
 
   $scope.state = 'form'
+  $scope.$watch 'state', (st)->
+    console.log(_editor)
+    if st == 'json'
+      $scope.$evalAsync ()->
+        _editor.refresh()
+        _editor.focus()
 
   cs ={concept: [{}]}
   $scope.v = {definition: cs}
