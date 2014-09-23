@@ -74,7 +74,7 @@
     } else {
       return $http({
         method: 'GET',
-        url: '/valuesets/valuesets.json'
+        url: 'valuesets/valuesets.json'
       }).success(function(data) {
         window.localStorage.setItem('vs', JSON.stringify(data));
         return $rootScope.vs = data;
