@@ -84,6 +84,8 @@ app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
   $scope.addConcept = ()-> cs.concept.push({})
   $scope.rmConcept = (c)-> cs.concept = _rm(c, cs.concept)
 
+  $scope.statuses = ['draft','active','retired']
+
   wtc = ()->
     $scope.vjson = angular.toJson($scope.v, true)
   $scope.$watch 'v', wtc, true
