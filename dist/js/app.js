@@ -141,7 +141,7 @@ var fhirface =
 	    console.log('cache.missmatch');
 	    missCb(function(newval) {
 	      st.setItem(key, JSON.stringify(newval));
-	      return p.resolve(newval);
+	      return d.resolve(newval);
 	    });
 	  }
 	  return d.promise;
