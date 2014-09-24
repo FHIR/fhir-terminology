@@ -7,20 +7,27 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-angular-templates');
+  grunt.loadNpmTasks('grunt-webpack');
 
   var buildDir = process.env.PREFIX || './dist/';
-  var files = {}
-  files[buildDir + 'js/main.js'] = 'src/coffee/**/*.coffee';
 
   grunt.initConfig({
     clean: {
       options: { force: true },
       main: [buildDir + '**/*']
     },
-    coffee: {
+    webpack: {
       app: {
-        options: { join: true },
-        files: files
+        entry: "./src/coffee/app.coffee",
+        output: {
+          path: buildDir + '/js/',
+          filename: "main.js",
+          library: "fhirface"
+        },
+        module: {loaders: [{ test: /\.coffee$/, loader: "coffee-loader" }]},
+        resolve: {
+          extensions: ["", ".webpack.js", ".web.js", ".js", ".coffee"],
+        }
       }
     },
     ngtemplates: {
@@ -63,8 +70,7 @@ module.exports = function (grunt) {
         dest: buildDir + 'js/lib.js'
       },
       app_js: {
-        src: [ buildDir + 'js/main.js',
-        buildDir + 'js/views.js' ],
+        src: [ buildDir + 'js/main.js', buildDir + 'js/views.js' ],
         dest: buildDir + 'js/app.js'
       },
       lib_css: {
@@ -133,6 +139,6 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('build', ['clean', 'coffee', 'less', 'ngtemplates', 'concat', 'copy']);
+  grunt.registerTask('build', ['clean', 'webpack', 'less', 'ngtemplates', 'concat', 'copy']);
   grunt.registerTask('srv', ['express', 'express-keepalive']);
 };

@@ -1,27 +1,64 @@
-<h1>{{v.name}}</h1>
-<hr/>
-<p><b>id:</b> {{v.identifier}}</p>
-<p><b>description:</b> {{v.description}}</p>
+<div ng-switch="state" ng-init="state='info'">
+  <h1>
+    {{v.name}}
+    <a class="btn btn-default">
+      v: {{v.version}}
+      <span class="badge">{{v.status}}</span>
+      <span ng-if="v.experimental" class="badge">experimental</span>
+    </a>
+    <small>{{v.date | date}}</small>
+    <div class="btn-group pull-right">
+      <a class="btn btn-default" ng-click="state='info'">info</a>
+      <a class="btn btn-default" ng-click="state='json'" >json</a>
+    </div>
+  </h1>
+  <hr/>
+  <p><b>id:</b> {{v.identifier}}</p>
+  <p><b>publisher:</b> {{v.publisher}}</p>
 
-<!-- <div ng-bind-html="trusted(v.content.text.div)"></div> -->
+  <p ng-repeat="tel in v.telecom">
+  <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>
+  </p>
+  <p>{{v.description}}</p>
 
-<hr/>
+  <hr/>
+  <div ng-switch-when="info">
+    <div class="well">
+      <input class="form-controll srch" ng-model="searchConcept"/>
+    </div>
+    <div ng-if="v.define">
+      <h3>.definition ({{v.define.concept.length}} concepts)</h3>
+      <table class="table">
+        <thead>
+          <th>code</th>
+          <th>display</th>
+          <th>definition</th>
+        </thead>
+        <tr ng-repeat="d in v.define.concept | csearch:searchConcept | limitTo: 20">
+          <th>{{d.code}}</th>
+          <td>{{d.display}}</td>
+          <td>{{d.definition}}</td>
+        </tr>
+      </table>
+      <h3>{{v.define.concept.length - 20}} more</h3>
+    </div>
 
-<table class="table">
-  <thead>
-    <th>code</th>
-    <th>definition</th>
-  </thead>
-  <tr ng-repeat="d in v.define.concept">
-    <th>{{d.code}}</th>
-    <td>{{d.definition}}</td>
-  </tr>
-</table>
+    <div ng-if="v.compose">
+      <div ng-repeat="inc in v.compose.include">
+        <h2>Include: {{inc.system}} (v {{inc.version}})</h2>
+        <ul>
+          <li ng-repeat="c in inc.code"> {{c}} </li>
+        </ul>
+      </div>
+    </div>
 
-<hr/>
+    <div ng-if="v.expansion">
+      <h1>.expansion</h1>
+      <pre>{{v.expansion}}</pre>
+    </div>
+  </div>
 
-<h2> Raw JSON</h2>
-
-<pre>
-{{v | json }}
-</pre>
+  <div ng-switch-when="json">
+    <pre> {{v | json }} </pre>
+    <hr/>
+  </div>

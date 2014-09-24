@@ -1,5 +1,4 @@
-'use strict'
-
+u = require('./utils')
 
 app = angular.module 'fhirface', [
   'ngCookies',
@@ -22,7 +21,7 @@ app = angular.module 'fhirface', [
       .otherwise
         redirectTo: '/'
 
-_rm = (x, xs)-> xs.filter (i)-> i != x
+
 
 app.filter 'vsearch', ()->
   (xs, str)->
@@ -31,6 +30,7 @@ app.filter 'vsearch', ()->
       cnt = x.content
       cnt.name.toLowerCase().indexOf(str) > -1 && cnt.description.toLowerCase().indexOf(str) > -1
 
+app.filter 'csearch', u.mkfilter('code', 'display', 'definition')
 
 app.provider 'menu', ()->
   $get: ()->
@@ -43,9 +43,22 @@ app.provider 'menu', ()->
 
 # todo extract cache
 # app.provider 'cache', ()->
+cache = (d, key, missCb)->
+  st = window.localStorage
+  val = st.getItem(key)
+  if val
+    d.resolve(JSON.parse(val))
+  else
+    missCb (newval)->
+      st.setItem(key, JSON.stringify(newval))
+      p.resolve(newval)
+  d.promise
 
+cacheUrl = (d, key, url)->
+  cache d, key, (save)->
+    $http(method: 'GET', url: url, success: save).success(save)
 
-app.run ($rootScope, menu, $http)->
+app.run ($q, $rootScope, menu, $http)->
   menu.build(
     {url: '/', label: 'Value Sets'}
     {url: '/new', label: 'New', icon: 'add'}
@@ -53,16 +66,8 @@ app.run ($rootScope, menu, $http)->
 
   $rootScope.menu = menu
 
-  vs = window.localStorage.getItem('vs')
-  if vs?
-    console.log('hit')
-    $rootScope.vs = JSON.parse(vs)
-  else
-    $http(method: 'GET', url: 'valuesets/valuesets.json')
-      .success (data)->
-        window.localStorage.setItem('vs', JSON.stringify(data))
-        $rootScope.vs = data
-
+  cacheUrl($q.defer(), 'vs','valuesets/valuesets.json')
+    .then (v)-> $rootScope.vs = v
 
 app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
 
@@ -73,7 +78,6 @@ app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
 
   $scope.state = 'form'
   $scope.$watch 'state', (st)->
-    console.log(_editor)
     if st == 'json'
       $scope.$evalAsync ()->
         _editor.refresh()
@@ -82,7 +86,7 @@ app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
   cs ={concept: [{}]}
   $scope.v = {definition: cs}
   $scope.addConcept = ()-> cs.concept.push({})
-  $scope.rmConcept = (c)-> cs.concept = _rm(c, cs.concept)
+  $scope.rmConcept = (c)-> cs.concept = u.rm(c, cs.concept)
 
   $scope.statuses = ['draft','active','retired']
 
