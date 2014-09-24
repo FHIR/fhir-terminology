@@ -12,7 +12,7 @@ cache = (d, key, missCb)->
     console.log('cache.missmatch')
     missCb (newval)->
       st.setItem(key, JSON.stringify(newval))
-      p.resolve(newval)
+      d.resolve(newval)
   d.promise
 
 app.service 'cache', ($http, $q)->
