@@ -1,27 +1,9 @@
-<h1>{{v.name}}</h1>
-<hr/>
-<p><b>id:</b> {{v.identifier}}</p>
-<p><b>description:</b> {{v.description}}</p>
-
-<!-- <div ng-bind-html="trusted(v.content.text.div)"></div> -->
-
-<hr/>
-
-<table class="table">
-  <thead>
-    <th>code</th>
-    <th>definition</th>
-  </thead>
-  <tr ng-repeat="d in v.define.concept">
-    <th>{{d.code}}</th>
-    <td>{{d.definition}}</td>
-  </tr>
-</table>
-
-<hr/>
-
-<h2> Raw JSON</h2>
-
-<pre>
-{{v | json }}
-</pre>
+<div ng-switch="vm.state" ng-init="vm = {state:'info'}">
+  <div ng-include src="'/src/views/valuesets/_header.html'"></div>
+  <div ng-switch-when="info">
+    <div ng-include src="'/src/views/valuesets/_info.html'"></div>
+  </div>
+  <div ng-switch-when="json">
+    <pre> {{v | json }} </pre>
+  </div>
+</div>
