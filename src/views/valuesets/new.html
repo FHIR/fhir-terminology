@@ -2,88 +2,17 @@
   <div class="btn-group pull-right">
     <a class="btn btn-default" switcher="state" swvalue="form">form</a>
     <a class="btn btn-default" switcher="state" swvalue="json">json</a>
-    <a class="btn btn-default" switcher="state" swvalue="info">info</a>
+    <!-- <a class="btn btn-default" switcher="state" swvalue="info">info</a> -->
   </div>
 </h2>
 <hr/>
 
 <div ng-show="state=='form'">
-  <form class="form-horizontal" role="form">
-    <div class="form-group">
-      <label class="col-sm-2 control-label">name</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" ng-model="v.name" placeholder="name"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">identifier</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" placeholder="id" ng-model="v.identifier"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">version</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" ng-model="v.version" placeholder="version"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">publisher</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" ng-model="v.publisher" placeholder="publisher"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">description</label>
-      <div class="col-sm-10">
-        <textarea type="text" class="form-control" ng-model="v.description"></textarea>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">status</label>
-      <div class="col-sm-10">
-        <select ng-options="l as l for l in statuses" ng-model="v.status" placeholder="status" class="form-control"> </select>
-      </div>
-    </div>
-    <!-- <telecom><1!-- 0..* Contact Contact information of the publisher § --1></telecom> -->
-    <!-- <copyright value="[string]"/><1!-- 0..1 About the value set or its content --1> -->
-    <!-- <experimental value="[boolean]"/><1!-- 0..1 If for testing purposes, not real usage § --1> -->
-    <!--  <extensible value="[boolean]"/><1!-- 0..1 Whether this is intended to be used with an extensible binding --1> -->
-    <!-- <date value="[dateTime]"/><1!-- 0..1 Date for given status § --1> -->
-  </form>
-
-  <form ng-show="state=='form'" class="form-horizontal" role="form" ng-submit="addConcept()">
-    <h3>definition.concept</h3>
-    <hr/>
-    <div class="form-group" ng-repeat="i in v.definition.concept">
-      <div class="col-sm-1 checkbox">
-        <label>
-          <input type="checkbox" ng-model="i.abstract"/>
-          Abstract
-        </label>
-      </div>
-      <div class="col-sm-2">
-        <input type="text" class="form-control" placeholder="code" ng-model="i.code">
-      </div>
-      <div class="col-sm-4">
-        <input type="text" class="form-control" placeholder="definition" ng-model="i.definition">
-      </div>
-      <div class="col-sm-4">
-        <input type="text" class="form-control" placeholder="display" ng-model="i.display">
-      </div>
-      <div class="col-sm-1">
-        <a ng-click="rmConcept(i)" class="btn btn-danger col-sm-12"> × </a>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-12">
-        <button type="submit" class="col-sm-12 btn btn-default">
-          Add Concept
-        </button>
-      </div>
-    </div>
-  </form>
-
+  <div ng-include src="'/src/views/valuesets/_info_form.html'"></div>
+  <hr/>
+  <div ng-include src="'/src/views/valuesets/_definition_form.html'"></div>
+  <hr/>
+  <div ng-include src="'/src/views/valuesets/_compose_form.html'"></div>
   <hr/>
   <div class="form-group">
     <div class="col-sm-6">
@@ -108,20 +37,20 @@
   </ui-codemirror>
 </div>
 
-<div ng-show="state=='info'">
-  <div class="txt">
-    <h3>Scope and Usage</h3>
-    <p>
-    Value sets may be constructed in one of two ways:
-    </p>
-    <ul>
-      <li>A value set can <i>define</i> its own codes, and/or</li>
-      <li>A value set can be <i>composed</i> of codes defined in other code systems, either by listing the codes or by providing a set of selection criteria</li>
-    </ul>
-    <p>
-    A value set can also be "expanded", where the value set is turned into a simple collection of enumerated codes.
-    This operation is performed to produce a collection of codes that are ready to use for data entry or
-    validation. An expanded value set may also contain the original definition as well.
-    </p>
-  </div>
-</div>
+<!-- <div ng-show="state=='info'"> -->
+<!--   <div class="txt"> -->
+<!--     <h3>Scope and Usage</h3> -->
+<!--     <p> -->
+<!--     Value sets may be constructed in one of two ways: -->
+<!--     </p> -->
+<!--     <ul> -->
+<!--       <li>A value set can <i>define</i> its own codes, and/or</li> -->
+<!--       <li>A value set can be <i>composed</i> of codes defined in other code systems, either by listing the codes or by providing a set of selection criteria</li> -->
+<!--     </ul> -->
+<!--     <p> -->
+<!--     A value set can also be "expanded", where the value set is turned into a simple collection of enumerated codes. -->
+<!--     This operation is performed to produce a collection of codes that are ready to use for data entry or -->
+<!--     validation. An expanded value set may also contain the original definition as well. -->
+<!--     </p> -->
+<!--   </div> -->
+<!-- </div> -->
