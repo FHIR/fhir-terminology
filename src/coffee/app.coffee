@@ -1,64 +1,25 @@
 u = require('./utils')
 
-app = angular.module 'fhirface', [
-  'ngCookies',
-  'ngAnimate',
-  'ngSanitize',
-  'ngRoute',
-  'ui.codemirror',
-  'ng-fhir'
-], ($routeProvider) ->
-    $routeProvider
-      .when '/',
-        templateUrl: '/src/views/welcome.html'
-        controller: 'WelcomeCtrl'
-      .when '/vs/:id',
-        templateUrl: '/src/views/valuesets/show.html'
-        controller: 'ShowValueSetCtrl'
-      .when '/new',
-        templateUrl: '/src/views/valuesets/new.html'
-        controller: 'NewValueSetCtrl'
-      .otherwise
-        redirectTo: '/'
+app = require('./module')
+require('./filters')
+require('./services')
+require('./directives')
 
+app.config ($routeProvider) ->
+  $routeProvider
+    .when '/',
+      templateUrl: '/src/views/welcome.html'
+      controller: 'WelcomeCtrl'
+    .when '/vs/:id',
+      templateUrl: '/src/views/valuesets/show.html'
+      controller: 'ShowValueSetCtrl'
+    .when '/new',
+      templateUrl: '/src/views/valuesets/new.html'
+      controller: 'NewValueSetCtrl'
+    .otherwise
+      redirectTo: '/'
 
-
-app.filter 'vsearch', ()->
-  (xs, str)->
-    return xs unless str?
-    xs.filter (x)->
-      cnt = x.content
-      cnt.name.toLowerCase().indexOf(str) > -1 && cnt.description.toLowerCase().indexOf(str) > -1
-
-app.filter 'csearch', u.mkfilter('code', 'display', 'definition')
-
-app.provider 'menu', ()->
-  $get: ()->
-    menu =
-      items: []
-      build: (items...)=>
-        state = 'path'
-        menu.items = items
-    menu
-
-# todo extract cache
-# app.provider 'cache', ()->
-cache = (d, key, missCb)->
-  st = window.localStorage
-  val = st.getItem(key)
-  if val
-    d.resolve(JSON.parse(val))
-  else
-    missCb (newval)->
-      st.setItem(key, JSON.stringify(newval))
-      p.resolve(newval)
-  d.promise
-
-cacheUrl = (d, key, url)->
-  cache d, key, (save)->
-    $http(method: 'GET', url: url, success: save).success(save)
-
-app.run ($q, $rootScope, menu, $http)->
+app.run ($q, $rootScope, menu, cache, $http)->
   menu.build(
     {url: '/', label: 'Value Sets'}
     {url: '/new', label: 'New', icon: 'add'}
@@ -66,7 +27,7 @@ app.run ($q, $rootScope, menu, $http)->
 
   $rootScope.menu = menu
 
-  cacheUrl($q.defer(), 'vs','valuesets/valuesets.json')
+  cache('vs','valuesets/valuesets.json')
     .then (v)-> $rootScope.vs = v
 
 app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
@@ -95,10 +56,10 @@ app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
   $scope.$watch 'v', wtc, true
 
 
-app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope, $sce) ->
-  $scope.trusted = (h)-> $sce.trustAsHtml(h)
+preProcessEntry = (e)->
+  delete e.content.text
+  e.content
 
+app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope) ->
   id = parseInt($routeParams.id)
-  v = $scope.vs.entry[id]
-  delete v.content.text
-  $scope.v = v.content
+  $scope.v = preProcessEntry($scope.vs.entry[id])

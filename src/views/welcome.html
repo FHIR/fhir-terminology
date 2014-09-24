@@ -1,10 +1,11 @@
 <div class="well">
-  <input placeholder="search" class="form-control srch" ng-model="search"/>
+  <input placeholder="search by prefixes" class="form-control srch" ng-model="search"/>
 </div>
-<a href="#/vs/{{$index}}" class="srch-res" ng-repeat="entry in vs.entry | vsearch:search">
+<a href="#/vs/{{$index}}" class="srch-res" ng-repeat="entry in vs.entry | vsearch:search | limitTo:15">
   <h4>{{entry.content.name}}</h4>
   <p>
     {{entry.content.description}}
   </p>
   <i class="fa fa-chevron-right"></i>
 </a>
+<h3>{{vs.entry.length}} items</h3>

@@ -1,8 +1,8 @@
 <h2>ValueSet
   <div class="btn-group pull-right">
-    <a class="btn btn-default" ng-click="state='form'">form</a>
-    <a class="btn btn-default" ng-click="state='json'" >json</a>
-    <a class="btn btn-default" ng-click="state='info'" >info</a>
+    <a class="btn btn-default" switcher="state" swvalue="form">form</a>
+    <a class="btn btn-default" switcher="state" swvalue="json">json</a>
+    <a class="btn btn-default" switcher="state" swvalue="info">info</a>
   </div>
 </h2>
 <hr/>
@@ -124,5 +124,4 @@
     validation. An expanded value set may also contain the original definition as well.
     </p>
   </div>
-  <ng-include src="src/views/valuesets/uml.html" />
 </div>
