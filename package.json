@@ -5,6 +5,7 @@
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-cli": "latest",
+    "jssha": "1.5.0",
     "bower": "latest",
     "webpack": "latest",
     "grunt-webpack": "latest",

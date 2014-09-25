@@ -3,6 +3,7 @@ require('./filters')
 require('./services')
 require('./directives')
 require('./controllers')
+sha = require('jssha')
 
 app.config ($routeProvider) ->
   $routeProvider
@@ -19,20 +20,18 @@ app.config ($routeProvider) ->
       redirectTo: '/'
 
 app.run ($q, $rootScope, menu, cache, $http, $firebase, $firebaseSimpleLogin)->
-  menu.build(
+  $rootScope.menu = menu.build(
     {url: '/', label: 'Value Sets'}
     {url: '/new', label: 'New', icon: 'add'}
   )
 
-  $rootScope.menu = menu
 
-  cache('vs','valuesets/valuesets.json')
-    .then (v)-> $rootScope.vs = v
 
-  fb = new Firebase('https://fhir-terminology.firebaseio.com/')
-  fba = $firebaseSimpleLogin(fb)
-  $rootScope.firebase = fb
+  fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
+  fba = $firebaseSimpleLogin(fbr)
+  $rootScope.firebaseRef = fbr
   $rootScope.auth = fba
+
 
   $rootScope.login = ()->
     fba.$login('github')
@@ -40,3 +39,20 @@ app.run ($q, $rootScope, menu, cache, $http, $firebase, $firebaseSimpleLogin)->
   $rootScope.logout = ()->
     console.log('logout')
     fba.$logout()
+
+  fbr = new Firebase('https://fhir-terminology.firebaseio.com/valuesetList')
+  vsChan = $firebase(fbr)
+  valuesets = vsChan.$asArray()
+  console.log(valuesets)
+  $rootScope.valuesets = valuesets
+  # valuesets.$bindTo($rootScope, "valuesets")
+
+  # $rootScope.$watch 'valuesets', (v)->
+  #   return unless v
+  #   list = for id, e of v when id? and e? and e.content?
+  #     {id: id, name: e.content.name, desc: e.content.description}
+  #   fbr = new Firebase('https://fhir-terminology.firebaseio.com')
+  #   vsChan = $firebase(fbr)
+  #   vsChan.$set('valuesetList', list)
+
+

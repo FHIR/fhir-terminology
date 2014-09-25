@@ -1,23 +1,23 @@
 <h1>
-  {{v.name}}
+  {{valueset.content.name}}
   <a class="btn btn-default">
     <b>v:</b> {{v.version}}
-    <span class="badge">{{v.status}}</span>
-    <span ng-if="v.experimental" class="badge">experimental</span>
+    <span class="badge">{{valueset.content.status}}</span>
+    <span ng-if="valueset.content.experimental" class="badge">experimental</span>
   </a>
-  <small>{{v.date | date}}</small>
+  <small>{{valueset.content.date | date}}</small>
   <div class="btn-group pull-right">
     <a class="btn btn-default" switcher="vm.state" swvalue='info' >info</a>
     <a class="btn btn-default" switcher="vm.state" swvalue='json'>json</a>
   </div>
 </h1>
 <hr/>
-<p><b>id:</b> {{v.identifier}}</p>
-<p><b>publisher:</b> {{v.publisher}}</p>
+<p><b>id:</b> {{valueset.content.identifier}}</p>
+<p><b>publisher:</b> {{valueset.content.publisher}}</p>
 
-<p ng-repeat="tel in v.telecom">
+<p ng-repeat="tel in valueset.content.telecom">
 <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>
 </p>
-<p>{{v.description}}</p>
+<p>{{valueset.content.description}}</p>
 
 <hr/>

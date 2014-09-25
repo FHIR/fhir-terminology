@@ -1,33 +1,33 @@
 <div class="well">
   <input class="form-controll srch" ng-model="searchConcept"/>
 </div>
-<div ng-if="v.define">
-  <h3>.definition ({{v.define.concept.length}} concepts)</h3>
+<div ng-if="valueset.content.define">
+  <h3>.definition ({{valueset.content.define.concept.length}} concepts)</h3>
   <table class="table">
     <thead>
       <th>code</th>
       <th>display</th>
       <th>definition</th>
     </thead>
-    <tr ng-repeat="d in v.define.concept | csearch:searchConcept | limitTo: 20">
+    <tr ng-repeat="d in valueset.content.define.concept | csearch:searchConcept | limitTo: 20">
       <th>{{d.code}}</th>
       <td>{{d.display}}</td>
       <td>{{d.definition}}</td>
     </tr>
   </table>
-  <h3>{{v.define.concept.length - 20}} more</h3>
+  <h3>{{valueset.content.define.concept.length - 20}} more</h3>
 </div>
 
-<div ng-if="v.compose">
-  <div ng-repeat="inc in v.compose.include">
-    <h2>Include: {{inc.system}} (v {{inc.version}})</h2>
+<div ng-if="valueset.content.compose">
+  <div ng-repeat="inc in valueset.content.compose.include">
+    <h2>Include: {{inc.system}} (valueset.content {{inc.version}})</h2>
     <ul>
       <li ng-repeat="c in inc.code"> {{c}} </li>
     </ul>
   </div>
 </div>
 
-<div ng-if="v.expansion">
+<div ng-if="valueset.content.expansion">
   <h1>.expansion</h1>
-  <pre>{{v.expansion}}</pre>
+  <pre>{{valueset.content.expansion}}</pre>
 </div>
