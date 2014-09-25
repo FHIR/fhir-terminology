@@ -310,9 +310,10 @@ var fhirface =
 	  }
 	};
 
-	_validateNewVs = function(vs) {
+	_validateNewVs = function(user, vs) {
 	  var errors;
 	  errors = {};
+	  _validate(user != null, ['user', 'is required. Please login'], errors);
 	  _validate(notEmpty(vs.identifier), ['identifier', 'is required'], errors);
 	  return errors;
 	};
@@ -399,7 +400,7 @@ var fhirface =
 	  return $scope.save = function() {
 	    var errors, v;
 	    v = $scope.v;
-	    errors = _validateNewVs(v);
+	    errors = _validateNewVs($scope.auth.user, v);
 	    if (errors.$error) {
 	      return $scope.errors = errors;
 	    } else {

@@ -310,9 +310,10 @@ var fhirface =
 	  }
 	};
 
-	_validateNewVs = function(vs) {
+	_validateNewVs = function(user, vs) {
 	  var errors;
 	  errors = {};
+	  _validate(user != null, ['user', 'is required. Please login'], errors);
 	  _validate(notEmpty(vs.identifier), ['identifier', 'is required'], errors);
 	  return errors;
 	};
@@ -399,7 +400,7 @@ var fhirface =
 	  return $scope.save = function() {
 	    var errors, v;
 	    v = $scope.v;
-	    errors = _validateNewVs(v);
+	    errors = _validateNewVs($scope.auth.user, v);
 	    if (errors.$error) {
 	      return $scope.errors = errors;
 	    } else {
@@ -596,7 +597,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "<h1>\n" +
     "  {{valueset.content.name}}\n" +
     "  <a class=\"btn btn-default\">\n" +
-    "    <b>v:</b> {{v.version}}\n" +
+    "    <b>v:</b> {{valueset.content.version}}\n" +
     "    <span class=\"badge\">{{valueset.content.status}}</span>\n" +
     "    <span ng-if=\"valueset.content.experimental\" class=\"badge\">experimental</span>\n" +
     "  </a>\n" +

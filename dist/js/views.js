@@ -111,7 +111,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "<h1>\n" +
     "  {{valueset.content.name}}\n" +
     "  <a class=\"btn btn-default\">\n" +
-    "    <b>v:</b> {{v.version}}\n" +
+    "    <b>v:</b> {{valueset.content.version}}\n" +
     "    <span class=\"badge\">{{valueset.content.status}}</span>\n" +
     "    <span ng-if=\"valueset.content.experimental\" class=\"badge\">experimental</span>\n" +
     "  </a>\n" +
