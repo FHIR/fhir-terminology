@@ -43,10 +43,10 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('/src/views/valuesets/_definition_form.html',
-    "<a ng-if=\"!v.definition.concept\" class=\"btn btn-default\" ng-click=\"addDefinition()\">\n" +
+    "<a ng-if=\"!v.define.concept\" class=\"btn btn-default\" ng-click=\"addDefinition()\">\n" +
     "  Add Definition\n" +
     "</a>\n" +
-    "<div ng-if=\"v.definition.concept\">\n" +
+    "<div ng-if=\"v.define.concept\">\n" +
     "  <h3>\n" +
     "    Definition\n" +
     "    <a class=\"btn btn-danger\" ng-click=\"rmDefinition()\">remove</a>\n" +
@@ -56,14 +56,14 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    <label class=\"col-sm-2 control-label\">system</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
     "      <input type=\"text\" class=\"form-control\"\n" +
-    "      ng-model=\"v.definition.system\" placeholder=\"system\"/>\n" +
+    "      ng-model=\"v.define.system\" placeholder=\"system\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">version</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
     "      <input type=\"text\" class=\"form-control\"\n" +
-    "      ng-model=\"v.definition.version\" placeholder=\"version\"/>\n" +
+    "      ng-model=\"v.define.version\" placeholder=\"version\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
@@ -71,14 +71,14 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    <div class=\"col-sm-10\">\n" +
     "      <div class=\"col-sm-1 checkbox\">\n" +
     "        <label>\n" +
-    "          <input type=\"checkbox\" ng-model=\"v.definition.caseSensitive\"/>\n" +
+    "          <input type=\"checkbox\" ng-model=\"v.define.caseSensitive\"/>\n" +
     "          Case Sensitive\n" +
     "        </label>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <hr/>\n" +
-    "  <div class=\"form-group\" ng-repeat=\"i in v.definition.concept\">\n" +
+    "  <div class=\"form-group\" ng-repeat=\"i in v.define.concept\">\n" +
     "    <div class=\"col-sm-1 checkbox\">\n" +
     "      <label>\n" +
     "        <input type=\"checkbox\" ng-model=\"i.abstract\"/>\n" +

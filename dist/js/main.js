@@ -347,10 +347,10 @@ var fhirface =
 	    concept: [{}]
 	  };
 	  $scope.addDefinition = function() {
-	    return $scope.v.definition = cs;
+	    return $scope.v.define = cs;
 	  };
 	  $scope.rmDefinition = function() {
-	    return $scope.v.definition = null;
+	    return $scope.v.define = null;
 	  };
 	  $scope.addConcept = function() {
 	    return cs.concept.push({});
@@ -388,7 +388,7 @@ var fhirface =
 	        avatar: u.thirdPartyUserData.avatar_url
 	      };
 	    }
-	    valuesets.$set(v.id, v);
+	    valuesets.$set(v.id, angular.copy(v));
 	    valuesetList.$push({
 	      id: v.id,
 	      name: v.content.name,
