@@ -21,8 +21,9 @@ _validate = (pred, [key,er], ers)->
     ers.$error = true
     ers[key] = er
 
-_validateNewVs = (vs)->
+_validateNewVs = (user, vs)->
   errors = {}
+  _validate user?, ['user', 'is required. Please login'], errors
   _validate notEmpty(vs.identifier), ['identifier', 'is required'], errors
   errors
 
@@ -79,7 +80,7 @@ app.controller 'NewValueSetCtrl', ($scope, $firebase, $location) ->
 
   $scope.save = ()->
     v = $scope.v
-    errors = _validateNewVs(v)
+    errors = _validateNewVs($scope.auth.user, v)
     if errors.$error
       $scope.errors = errors
     else
