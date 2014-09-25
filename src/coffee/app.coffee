@@ -18,7 +18,7 @@ app.config ($routeProvider) ->
     .otherwise
       redirectTo: '/'
 
-app.run ($q, $rootScope, menu, cache, $http)->
+app.run ($q, $rootScope, menu, cache, $http, $firebase, $firebaseSimpleLogin)->
   menu.build(
     {url: '/', label: 'Value Sets'}
     {url: '/new', label: 'New', icon: 'add'}
@@ -28,3 +28,15 @@ app.run ($q, $rootScope, menu, cache, $http)->
 
   cache('vs','valuesets/valuesets.json')
     .then (v)-> $rootScope.vs = v
+
+  fb = new Firebase('https://fhir-terminology.firebaseio.com/')
+  fba = $firebaseSimpleLogin(fb)
+  $rootScope.firebase = fb
+  $rootScope.auth = fba
+
+  $rootScope.login = ()->
+    fba.$login('github')
+
+  $rootScope.logout = ()->
+    console.log('logout')
+    fba.$logout()

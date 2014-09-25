@@ -4,5 +4,6 @@ module.exports = angular.module 'fhirface', [
   'ngSanitize',
   'ngRoute',
   'ui.codemirror',
-  'ng-fhir'
+  'ng-fhir',
+  'firebase'
 ]
