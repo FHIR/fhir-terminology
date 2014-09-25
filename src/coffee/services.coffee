@@ -27,4 +27,5 @@ app.provider 'menu', ()->
       build: (items...)=>
         state = 'path'
         menu.items = items
+        menu
     menu

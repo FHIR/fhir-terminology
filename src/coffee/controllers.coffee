@@ -1,6 +1,6 @@
 app = require('./module')
 u = require('./utils')
-app.controller 'WelcomeCtrl', (menu, $scope, $http) ->
+app.controller 'WelcomeCtrl', (menu, $scope, $http, $firebase) ->
 
 app.controller 'NewValueSetCtrl', (menu, $scope, $fhir) ->
   # hack to fix code mirror
@@ -47,6 +47,10 @@ preProcessEntry = (e)->
   delete e.content.text
   e.content
 
-app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope) ->
-  id = parseInt($routeParams.id)
-  $scope.v = preProcessEntry($scope.vs.entry[id])
+app.controller 'ShowValueSetCtrl', (menu, $routeParams, $scope, $rootScope, $firebase) ->
+  id = $routeParams.id
+  url = "https://fhir-terminology.firebaseio.com/valuesets/#{id}"
+  fbr = new Firebase(url)
+  vChan = $firebase(fbr)
+  valueset = vChan.$asObject()
+  valueset.$bindTo($scope, "valueset")
