@@ -1,3 +1,10 @@
+.avatar {
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  vertical-align: middle;
+  border-radius: 3px;
+}
 .brcrmp {
   background: white;
   font-size: 16px;
@@ -50,6 +57,9 @@ input.srch {
   position: relative;
   border-bottom: 1px solid #ddd;
 }
+.srch-res .avatar {
+  opacity: 0.5;
+}
 .srch-res,
 .srch-res:hover,
 .srch-res:active {
@@ -64,6 +74,9 @@ input.srch {
 }
 .srch-res:hover {
   color: #333;
+}
+.srch-res:hover .avatar {
+  opacity: 1;
 }
 .srch-res:hover h4 {
   color: #e62b1e;

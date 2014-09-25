@@ -114,10 +114,12 @@ var fhirface =
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var app, mkPrefixMatch, mkfilter,
+	var app, mkPrefixMatch, mkfilter, sha,
 	  __slice = [].slice;
 
 	app = __webpack_require__(1);
+
+	sha = __webpack_require__(7);
 
 	mkPrefixMatch = function(str) {
 	  var tokens;
@@ -163,6 +165,12 @@ var fhirface =
 	});
 
 	app.filter('csearch', mkfilter('code', 'display', 'definition'));
+
+	app.filter('sha', function() {
+	  return function(x) {
+	    return sha(x, 'TEXT').getHash("SHA-1", "HEX");
+	  };
+	});
 
 
 /***/ },
@@ -264,22 +272,22 @@ var fhirface =
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var app, preProcessEntry, u;
+	var app, fixCodeMirror, notEmpty, u, _prepareVs, _validate, _validateNewVs;
 
 	app = __webpack_require__(1);
 
 	u = __webpack_require__(6);
 
-	app.controller('WelcomeCtrl', function(menu, $scope, $http, $firebase) {});
+	app.controller('WelcomeCtrl', function($scope, $http, $firebase) {});
 
-	app.controller('NewValueSetCtrl', function(menu, $scope, $fhir) {
-	  var cmp, cs, wtc, _editor;
+	fixCodeMirror = function($scope) {
+	  var _editor;
 	  _editor = null;
 	  $scope.codemirror = function(x) {
 	    return _editor = x;
 	  };
 	  $scope.state = 'form';
-	  $scope.$watch('state', function(st) {
+	  return $scope.$watch('state', function(st) {
 	    if (st === 'json') {
 	      return $scope.$evalAsync(function() {
 	        _editor.refresh();
@@ -287,7 +295,53 @@ var fhirface =
 	      });
 	    }
 	  });
-	  $scope.v = {};
+	};
+
+	notEmpty = function(x) {
+	  return x && x !== '';
+	};
+
+	_validate = function(pred, _arg, ers) {
+	  var er, key;
+	  key = _arg[0], er = _arg[1];
+	  if (!pred) {
+	    ers.$error = true;
+	    return ers[key] = er;
+	  }
+	};
+
+	_validateNewVs = function(vs) {
+	  var errors;
+	  errors = {};
+	  _validate(notEmpty(vs.identifier), ['identifier', 'is required'], errors);
+	  return errors;
+	};
+
+	_prepareVs = function(v) {
+	  return {
+	    id: u.sha(v.identifier || v.name),
+	    content: v
+	  };
+	};
+
+	app.controller('NewValueSetCtrl', function($scope, $firebase, $location) {
+	  var cmp, cs, mkchan, valuesetList, valuesets, wtc, _save;
+	  fixCodeMirror($scope);
+	  $scope.statuses = ['draft', 'active', 'retired'];
+	  $scope.v = {
+	    name: 'MyName',
+	    version: '0.0.1',
+	    status: 'draft'
+	  };
+	  $scope.$watch('auth.user', function(u) {
+	    if (u != null) {
+	      return $scope.v.publisher = u.displayName;
+	    }
+	  });
+	  wtc = function() {
+	    return $scope.vjson = angular.toJson($scope.v, true);
+	  };
+	  $scope.$watch('v', wtc, true);
 	  cs = {
 	    concept: [{}]
 	  };
@@ -303,7 +357,6 @@ var fhirface =
 	  $scope.rmConcept = function(c) {
 	    return cs.concept = u.rm(c, cs.concept);
 	  };
-	  $scope.statuses = ['draft', 'active', 'retired'];
 	  cmp = {
 	    include: [
 	      {
@@ -320,18 +373,43 @@ var fhirface =
 	  $scope.addCode = function() {
 	    return cmp.include[0].code.push({});
 	  };
-	  wtc = function() {
-	    return $scope.vjson = angular.toJson($scope.v, true);
+	  mkchan = function(url) {
+	    return $firebase(new Firebase(url));
 	  };
-	  return $scope.$watch('v', wtc, true);
+	  valuesets = mkchan("https://fhir-terminology.firebaseio.com/valuesets");
+	  valuesetList = mkchan("https://fhir-terminology.firebaseio.com/valuesetList");
+	  _save = function(v) {
+	    var user;
+	    u = $scope.auth.user;
+	    if (u) {
+	      user = {
+	        author: u.displayName,
+	        avatar: u.thirdPartyUserData.avatar_url
+	      };
+	    }
+	    valuesets.$set(v.id, v);
+	    valuesetList.$push({
+	      id: v.id,
+	      name: v.content.name,
+	      desc: v.content.description,
+	      user: user
+	    });
+	    return $location.path("/vs/" + v.id);
+	  };
+	  return $scope.save = function() {
+	    var errors, v;
+	    v = $scope.v;
+	    errors = _validateNewVs(v);
+	    if (errors.$error) {
+	      return $scope.errors = errors;
+	    } else {
+	      $scope.errors = null;
+	      return _save(_prepareVs(v));
+	    }
+	  };
 	});
 
-	preProcessEntry = function(e) {
-	  delete e.content.text;
-	  return e.content;
-	};
-
-	app.controller('ShowValueSetCtrl', function(menu, $routeParams, $scope, $rootScope, $firebase) {
+	app.controller('ShowValueSetCtrl', function($routeParams, $scope, $rootScope, $firebase) {
 	  var fbr, id, url, vChan, valueset;
 	  id = $routeParams.id;
 	  url = "https://fhir-terminology.firebaseio.com/valuesets/" + id;
@@ -345,6 +423,16 @@ var fhirface =
 /***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
+
+	var sha;
+
+	sha = __webpack_require__(7);
+
+	exports.sha = function(x) {
+	  if (x) {
+	    return new sha(x, 'TEXT').getHash("SHA-1", "HEX");
+	  }
+	};
 
 	exports.rm = function(x, xs) {
 	  return xs.filter(function(i) {
