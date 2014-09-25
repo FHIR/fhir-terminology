@@ -1,4 +1,5 @@
 app = require('./module')
+sha = require('jssha')
 mkPrefixMatch = (str)->
   tokens = str.toLowerCase().split(/\s+/)
   (x)->
@@ -21,3 +22,7 @@ app.filter 'vsearch', ()->
       x.name.toLowerCase().indexOf(str) > -1 && x.desc.toLowerCase().indexOf(str) > -1
 
 app.filter 'csearch', mkfilter('code', 'display', 'definition')
+
+app.filter 'sha', ()->
+  (x)->
+    sha(x,'TEXT').getHash("SHA-1", "HEX")
