@@ -122,26 +122,26 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('/src/views/valuesets/_header.html',
     "<h1>\n" +
-    "  {{v.name}}\n" +
+    "  {{valueset.content.name}}\n" +
     "  <a class=\"btn btn-default\">\n" +
     "    <b>v:</b> {{v.version}}\n" +
-    "    <span class=\"badge\">{{v.status}}</span>\n" +
-    "    <span ng-if=\"v.experimental\" class=\"badge\">experimental</span>\n" +
+    "    <span class=\"badge\">{{valueset.content.status}}</span>\n" +
+    "    <span ng-if=\"valueset.content.experimental\" class=\"badge\">experimental</span>\n" +
     "  </a>\n" +
-    "  <small>{{v.date | date}}</small>\n" +
+    "  <small>{{valueset.content.date | date}}</small>\n" +
     "  <div class=\"btn-group pull-right\">\n" +
     "    <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='info' >info</a>\n" +
     "    <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='json'>json</a>\n" +
     "  </div>\n" +
     "</h1>\n" +
     "<hr/>\n" +
-    "<p><b>id:</b> {{v.identifier}}</p>\n" +
-    "<p><b>publisher:</b> {{v.publisher}}</p>\n" +
+    "<p><b>id:</b> {{valueset.content.identifier}}</p>\n" +
+    "<p><b>publisher:</b> {{valueset.content.publisher}}</p>\n" +
     "\n" +
-    "<p ng-repeat=\"tel in v.telecom\">\n" +
+    "<p ng-repeat=\"tel in valueset.content.telecom\">\n" +
     "<b>telecom:</b> {{tel.system}}: {{tel.value}}</p>\n" +
     "</p>\n" +
-    "<p>{{v.description}}</p>\n" +
+    "<p>{{valueset.content.description}}</p>\n" +
     "\n" +
     "<hr/>\n"
   );
@@ -151,35 +151,35 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "<div class=\"well\">\n" +
     "  <input class=\"form-controll srch\" ng-model=\"searchConcept\"/>\n" +
     "</div>\n" +
-    "<div ng-if=\"v.define\">\n" +
-    "  <h3>.definition ({{v.define.concept.length}} concepts)</h3>\n" +
+    "<div ng-if=\"valueset.content.define\">\n" +
+    "  <h3>.definition ({{valueset.content.define.concept.length}} concepts)</h3>\n" +
     "  <table class=\"table\">\n" +
     "    <thead>\n" +
     "      <th>code</th>\n" +
     "      <th>display</th>\n" +
     "      <th>definition</th>\n" +
     "    </thead>\n" +
-    "    <tr ng-repeat=\"d in v.define.concept | csearch:searchConcept | limitTo: 20\">\n" +
+    "    <tr ng-repeat=\"d in valueset.content.define.concept | csearch:searchConcept | limitTo: 20\">\n" +
     "      <th>{{d.code}}</th>\n" +
     "      <td>{{d.display}}</td>\n" +
     "      <td>{{d.definition}}</td>\n" +
     "    </tr>\n" +
     "  </table>\n" +
-    "  <h3>{{v.define.concept.length - 20}} more</h3>\n" +
+    "  <h3>{{valueset.content.define.concept.length - 20}} more</h3>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"v.compose\">\n" +
-    "  <div ng-repeat=\"inc in v.compose.include\">\n" +
-    "    <h2>Include: {{inc.system}} (v {{inc.version}})</h2>\n" +
+    "<div ng-if=\"valueset.content.compose\">\n" +
+    "  <div ng-repeat=\"inc in valueset.content.compose.include\">\n" +
+    "    <h2>Include: {{inc.system}} (valueset.content {{inc.version}})</h2>\n" +
     "    <ul>\n" +
     "      <li ng-repeat=\"c in inc.code\"> {{c}} </li>\n" +
     "    </ul>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"v.expansion\">\n" +
+    "<div ng-if=\"valueset.content.expansion\">\n" +
     "  <h1>.expansion</h1>\n" +
-    "  <pre>{{v.expansion}}</pre>\n" +
+    "  <pre>{{valueset.content.expansion}}</pre>\n" +
     "</div>\n"
   );
 
@@ -298,7 +298,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    <div ng-include src=\"'/src/views/valuesets/_info.html'\"></div>\n" +
     "  </div>\n" +
     "  <div ng-switch-when=\"json\">\n" +
-    "    <pre> {{v | json }} </pre>\n" +
+    "    <pre> {{valueset | json }} </pre>\n" +
     "  </div>\n" +
     "</div>\n"
   );
@@ -308,14 +308,13 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "<div class=\"well\">\n" +
     "  <input placeholder=\"search by prefixes\" class=\"form-control srch\" ng-model=\"search\"/>\n" +
     "</div>\n" +
-    "<a href=\"#/vs/{{$index}}\" class=\"srch-res\" ng-repeat=\"entry in vs.entry | vsearch:search | limitTo:15\">\n" +
-    "  <h4>{{entry.content.name}}</h4>\n" +
+    "<a href=\"#/vs/{{entry.id}}\" class=\"srch-res\" ng-repeat=\"entry in valuesets | vsearch:search | limitTo:30\">\n" +
+    "  <h4>{{entry.name}}</h4>\n" +
     "  <p>\n" +
-    "    {{entry.content.description}}\n" +
+    "    {{entry.desc}}\n" +
     "  </p>\n" +
     "  <i class=\"fa fa-chevron-right\"></i>\n" +
-    "</a>\n" +
-    "<h3>{{vs.entry.length}} items</h3>\n"
+    "</a>\n"
   );
 
 }]);
