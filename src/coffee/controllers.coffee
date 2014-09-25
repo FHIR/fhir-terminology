@@ -48,8 +48,8 @@ app.controller 'NewValueSetCtrl', ($scope, $firebase, $location) ->
   $scope.$watch 'v', wtc, true
 
   cs ={concept: [{}]}
-  $scope.addDefinition = ()-> $scope.v.definition = cs
-  $scope.rmDefinition = ()-> $scope.v.definition = null
+  $scope.addDefinition = ()-> $scope.v.define = cs
+  $scope.rmDefinition = ()-> $scope.v.define = null
 
   $scope.addConcept = ()-> cs.concept.push({})
   $scope.rmConcept = (c)-> cs.concept = u.rm(c, cs.concept)
@@ -69,7 +69,7 @@ app.controller 'NewValueSetCtrl', ($scope, $firebase, $location) ->
     if u
       user = {author: u.displayName, avatar: u.thirdPartyUserData.avatar_url}
 
-    valuesets.$set(v.id, v)
+    valuesets.$set(v.id, angular.copy(v))
     valuesetList.$push
       id: v.id
       name: v.content.name
