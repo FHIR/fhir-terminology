@@ -16,3 +16,4 @@ app.directive 'switcher', ()->
     element.click ()->
       scope.$apply ()->
         scope.switcher = swvalue
+

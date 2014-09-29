@@ -15,11 +15,7 @@ mkfilter = (flds...)->
       xs.filter (x)->
         flds.some (fld)-> match(x[fld])
 
-app.filter 'vsearch', ()->
-  (xs, str)->
-    return xs unless str?
-    xs.filter (x)->
-      x.name.toLowerCase().indexOf(str) > -1 && x.desc.toLowerCase().indexOf(str) > -1
+app.filter 'vsearch', mkfilter('name','desc')
 
 app.filter 'csearch', mkfilter('code', 'display', 'definition')
 

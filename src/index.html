@@ -20,18 +20,19 @@
       {{item.label}}
     </a>
   </div>
+  <a ng-click="batch()">batch</a>
   <div style="float:right;">
-    <div ng-if="!auth.user" class="menu-item">
-      <a href="#/" ng-click="login()">Login</a>
+    <div ng-if="!auth.auth.user" class="menu-item">
+      <a href="#/" ng-click="auth.login()">Login</a>
     </div>
-    <div ng-if="auth.user" class="menu-item">
+    <div ng-if="auth.auth.user" class="menu-item">
       <a href="javascript:void()">
-        <img class="avatar" ng-src="{{auth.user.thirdPartyUserData.avatar_url}}"/>
-        {{auth.user.displayName}}
+        <img class="avatar" ng-src="{{auth.auth.user.thirdPartyUserData.avatar_url}}"/>
+        {{auth.auth.user.displayName}}
       </a>
     </div>
-    <div ng-if="auth.user" class="menu-item">
-      <a href="#/" ng-click="logout()">Logout</a>
+    <div ng-if="auth.auth.user" class="menu-item">
+      <a href="#/" ng-click="auth.logout()">Logout</a>
     </div>
     |
     <a href="https://github.com/fhir/fhir-terminology"><big class="fa fa-github"></big></a>

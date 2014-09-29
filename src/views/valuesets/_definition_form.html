@@ -1,61 +1,61 @@
-<a ng-if="!v.define.concept" class="btn btn-default" ng-click="addDefinition()">
+<a ng-if="!valueset.define" class="btn btn-default" ng-click="valueset.$addDefine()">
   Add Definition
 </a>
-<div ng-if="v.define.concept">
+<div ng-if="valueset.define">
   <h3>
     Definition
-    <a class="btn btn-danger" ng-click="rmDefinition()">remove</a>
+    <a class="btn btn-danger" ng-click="valueset.$rmDefine()">remove</a>
   </h3>
   <hr/>
   <div class="form-group">
     <label class="col-sm-2 control-label">system</label>
     <div class="col-sm-10">
       <input type="text" class="form-control"
-      ng-model="v.define.system" placeholder="system"/>
+      ng-model="valueset.define.system" placeholder="system"/>
     </div>
   </div>
   <div class="form-group">
     <label class="col-sm-2 control-label">version</label>
     <div class="col-sm-10">
       <input type="text" class="form-control"
-      ng-model="v.define.version" placeholder="version"/>
+      ng-model="valueset.define.version" placeholder="version"/>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-2 control-label">version</label>
+    <label class="col-sm-2 control-label">caseSensitive</label>
     <div class="col-sm-10">
       <div class="col-sm-1 checkbox">
         <label>
-          <input type="checkbox" ng-model="v.define.caseSensitive"/>
-          Case Sensitive
+          <input type="checkbox" ng-model="valueset.define.caseSensitive"/>
+          CaseSensitive
         </label>
       </div>
     </div>
   </div>
   <hr/>
-  <div class="form-group" ng-repeat="i in v.define.concept">
+  <div class="form-group" ng-repeat="concept in valueset.define.concept">
     <div class="col-sm-1 checkbox">
       <label>
-        <input type="checkbox" ng-model="i.abstract"/>
+        <input type="checkbox" ng-model="concept.abstract"/>
         Abstract
       </label>
     </div>
     <div class="col-sm-2">
-      <input type="text" class="form-control" placeholder="code" ng-model="i.code">
+      <input type="text" class="form-control" placeholder="code" ng-model="concept.code">
     </div>
     <div class="col-sm-4">
-      <input type="text" class="form-control" placeholder="definition" ng-model="i.definition">
+      <input type="text" class="form-control" placeholder="definition" ng-model="concept.definition">
     </div>
     <div class="col-sm-4">
-      <input type="text" class="form-control" placeholder="display" ng-model="i.display">
+      <input type="text" class="form-control" placeholder="display" ng-model="concept.display">
     </div>
     <div class="col-sm-1">
-      <a ng-click="rmConcept(i)" class="btn btn-danger col-sm-12"> × </a>
+      <a ng-click="valueset.define.$rmConcept(concept)" class="btn btn-danger col-sm-12"> × </a>
     </div>
   </div>
   <div class="form-group">
     <div class="col-sm-12">
-      <a ng-click="addConcept()" class="col-sm-12 btn btn-default">Add Concept</a>
+      <a ng-click="valueset.define.$addConcept()" class="col-sm-12 btn btn-default">Add Concept</a>
     </div>
   </div>
 </div>

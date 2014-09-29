@@ -1,4 +1,7 @@
 <h1>
+  <img title="{{entry.user.name}}"
+       class="avatar" ng-src="{{(entry.user && entry.user.avatar) || 'http://www.hl7.org/implement/standards/fhir/v0.08/flame128.png'}}"/>
+  {{item | json}}
   {{valueset.content.name}}
   <a class="btn btn-default">
     <b>v:</b> {{valueset.content.version}}
@@ -9,6 +12,8 @@
   <div class="btn-group pull-right">
     <a class="btn btn-default" switcher="vm.state" swvalue='info' >info</a>
     <a class="btn btn-default" switcher="vm.state" swvalue='json'>json</a>
+    <a class="btn btn-danger" ng-click="remove()">remove</a>
+    <a class="btn btn-success" href="#/vs/{{entry.id}}/edit">edit</a>
   </div>
 </h1>
 <hr/>
