@@ -138,7 +138,7 @@ var fhirface =
 	  id = $routeParams.id;
 	  valueset($scope, 'valuesetOrig', id);
 	  item = null;
-	  return $scope.$watch('valuesetOrig', function(v) {
+	  $scope.$watch('valuesetOrig', function(v) {
 	    var inited;
 	    if ((v == null) || inited) {
 	      return;
@@ -146,6 +146,10 @@ var fhirface =
 	    inited = v;
 	    return $scope.valueset = valuesetRepo.$build(v.content);
 	  });
+	  u.fixCodeMirror($scope);
+	  return $scope.$watch('valueset', (function(x) {
+	    return $scope.vjson = x.$toJson();
+	  }), true);
 	});
 
 
@@ -440,7 +444,7 @@ var fhirface =
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mkCompose, mkConceptSet, mkDefine, notEmpty, u, _check, _validate;
+	var mkCompose, mkConceptSet, mkDefine, mkValueSet, notEmpty, u, _check, _validate;
 
 	u = __webpack_require__(6);
 
@@ -491,7 +495,7 @@ var fhirface =
 	  };
 	  methods = {
 	    $addCode: function() {
-	      return set.code.push({});
+	      return set.code.push("");
 	    },
 	    $rmCode: function(x) {
 	      return set.code = u.rm(x, set.code);
@@ -525,11 +529,10 @@ var fhirface =
 	  return angular.extend(compose, attrs, colls, methods);
 	};
 
-	exports.mkValueSet = function(attrs) {
+	mkValueSet = function(attrs) {
 	  var compose, defaults, define, methods, valueset;
 	  attrs || (attrs = {});
 	  define = mkDefine(attrs.define);
-	  console.log(define);
 	  compose = mkCompose(attrs.compose);
 	  valueset = {};
 	  defaults = {
@@ -539,8 +542,6 @@ var fhirface =
 	    identifier: 'myid1'
 	  };
 	  methods = {
-	    define: define,
-	    compose: compose,
 	    $statuses: ['draft', 'active', 'retired'],
 	    $addDefine: function() {
 	      return valueset.define = define;
@@ -567,8 +568,22 @@ var fhirface =
 	      }));
 	    }
 	  };
+	  if (attrs.define != null) {
+	    methods.define = define;
+	  }
+	  if (attrs.compose != null) {
+	    methods.compose = compose;
+	  }
 	  return angular.extend(valueset, defaults, attrs, methods);
 	};
+
+	exports.mkConceptSet = mkConceptSet;
+
+	exports.mkDefine = mkDefine;
+
+	exports.mkCompose = mkCompose;
+
+	exports.mkValueSet = mkValueSet;
 
 
 /***/ },
@@ -677,11 +692,11 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "</div>\n" +
     "<hr/>\n" +
-    "<div class=\"form-group\" ng-repeat=\"code in conceptSet.code\">\n" +
+    "<div class=\"form-group\" ng-repeat=\"code in conceptSet.code track by $index\">\n" +
     "  <label class=\"col-sm-2 control-label\">code</label>\n" +
     "  <div class=\"col-sm-5\">\n" +
     "    <input type=\"text\" class=\"form-control\"\n" +
-    "      placeholder=\"code\" ng-model=\"code.code\"/>\n" +
+    "      placeholder=\"code\" ng-model=\"conceptSet.code[$index]\"/>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-1\">\n" +
     "    <a ng-click=\"conceptSet.$rmCode(code)\" class=\"btn btn-danger col-sm-12\"> × </a>\n" +
@@ -877,7 +892,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('/src/views/valuesets/edit.html',
-    "<h2>ValueSet\n" +
+    "<h2 ng-init=\"state='form'\">ValueSet\n" +
     "  <div class=\"btn-group pull-right\">\n" +
     "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"form\">form</a>\n" +
     "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"json\">json</a>\n" +
@@ -970,18 +985,18 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div ng-include src=\"'/src/views/valuesets/_info_form.html'\"></div>\n" +
     "    <hr/>\n" +
-    "    <!-- <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div> -->\n" +
-    "    <!-- <hr/> -->\n" +
-    "    <!-- <div ng-include src=\"'/src/views/valuesets/_compose_form.html'\"></div> -->\n" +
-    "    <!-- <hr/> -->\n" +
-    "    <!-- <div class=\"form-group\"> -->\n" +
-    "    <!--   <div class=\"col-sm-6\"> -->\n" +
-    "    <!--     <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button> -->\n" +
-    "    <!--   </div> -->\n" +
-    "    <!--   <div class=\"col-sm-6\"> -->\n" +
-    "    <!--     <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a> -->\n" +
-    "    <!--   </div> -->\n" +
-    "    <!-- </div> -->\n" +
+    "    <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div>\n" +
+    "    <hr/>\n" +
+    "    <div ng-include src=\"'/src/views/valuesets/_compose_form.html'\"></div>\n" +
+    "    <hr/>\n" +
+    "    <div class=\"form-group\">\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "  </form>\n" +
     "</div>\n" +
     "\n" +

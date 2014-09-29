@@ -138,7 +138,7 @@ var fhirface =
 	  id = $routeParams.id;
 	  valueset($scope, 'valuesetOrig', id);
 	  item = null;
-	  return $scope.$watch('valuesetOrig', function(v) {
+	  $scope.$watch('valuesetOrig', function(v) {
 	    var inited;
 	    if ((v == null) || inited) {
 	      return;
@@ -146,6 +146,10 @@ var fhirface =
 	    inited = v;
 	    return $scope.valueset = valuesetRepo.$build(v.content);
 	  });
+	  u.fixCodeMirror($scope);
+	  return $scope.$watch('valueset', (function(x) {
+	    return $scope.vjson = x.$toJson();
+	  }), true);
 	});
 
 
@@ -440,7 +444,7 @@ var fhirface =
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mkCompose, mkConceptSet, mkDefine, notEmpty, u, _check, _validate;
+	var mkCompose, mkConceptSet, mkDefine, mkValueSet, notEmpty, u, _check, _validate;
 
 	u = __webpack_require__(6);
 
@@ -491,7 +495,7 @@ var fhirface =
 	  };
 	  methods = {
 	    $addCode: function() {
-	      return set.code.push({});
+	      return set.code.push("");
 	    },
 	    $rmCode: function(x) {
 	      return set.code = u.rm(x, set.code);
@@ -525,11 +529,10 @@ var fhirface =
 	  return angular.extend(compose, attrs, colls, methods);
 	};
 
-	exports.mkValueSet = function(attrs) {
+	mkValueSet = function(attrs) {
 	  var compose, defaults, define, methods, valueset;
 	  attrs || (attrs = {});
 	  define = mkDefine(attrs.define);
-	  console.log(define);
 	  compose = mkCompose(attrs.compose);
 	  valueset = {};
 	  defaults = {
@@ -539,8 +542,6 @@ var fhirface =
 	    identifier: 'myid1'
 	  };
 	  methods = {
-	    define: define,
-	    compose: compose,
 	    $statuses: ['draft', 'active', 'retired'],
 	    $addDefine: function() {
 	      return valueset.define = define;
@@ -567,8 +568,22 @@ var fhirface =
 	      }));
 	    }
 	  };
+	  if (attrs.define != null) {
+	    methods.define = define;
+	  }
+	  if (attrs.compose != null) {
+	    methods.compose = compose;
+	  }
 	  return angular.extend(valueset, defaults, attrs, methods);
 	};
+
+	exports.mkConceptSet = mkConceptSet;
+
+	exports.mkDefine = mkDefine;
+
+	exports.mkCompose = mkCompose;
+
+	exports.mkValueSet = mkValueSet;
 
 
 /***/ },

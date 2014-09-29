@@ -62,11 +62,11 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "</div>\n" +
     "<hr/>\n" +
-    "<div class=\"form-group\" ng-repeat=\"code in conceptSet.code\">\n" +
+    "<div class=\"form-group\" ng-repeat=\"code in conceptSet.code track by $index\">\n" +
     "  <label class=\"col-sm-2 control-label\">code</label>\n" +
     "  <div class=\"col-sm-5\">\n" +
     "    <input type=\"text\" class=\"form-control\"\n" +
-    "      placeholder=\"code\" ng-model=\"code.code\"/>\n" +
+    "      placeholder=\"code\" ng-model=\"conceptSet.code[$index]\"/>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-1\">\n" +
     "    <a ng-click=\"conceptSet.$rmCode(code)\" class=\"btn btn-danger col-sm-12\"> × </a>\n" +
@@ -262,7 +262,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('/src/views/valuesets/edit.html',
-    "<h2>ValueSet\n" +
+    "<h2 ng-init=\"state='form'\">ValueSet\n" +
     "  <div class=\"btn-group pull-right\">\n" +
     "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"form\">form</a>\n" +
     "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"json\">json</a>\n" +
@@ -355,18 +355,18 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div ng-include src=\"'/src/views/valuesets/_info_form.html'\"></div>\n" +
     "    <hr/>\n" +
-    "    <!-- <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div> -->\n" +
-    "    <!-- <hr/> -->\n" +
-    "    <!-- <div ng-include src=\"'/src/views/valuesets/_compose_form.html'\"></div> -->\n" +
-    "    <!-- <hr/> -->\n" +
-    "    <!-- <div class=\"form-group\"> -->\n" +
-    "    <!--   <div class=\"col-sm-6\"> -->\n" +
-    "    <!--     <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button> -->\n" +
-    "    <!--   </div> -->\n" +
-    "    <!--   <div class=\"col-sm-6\"> -->\n" +
-    "    <!--     <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a> -->\n" +
-    "    <!--   </div> -->\n" +
-    "    <!-- </div> -->\n" +
+    "    <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div>\n" +
+    "    <hr/>\n" +
+    "    <div ng-include src=\"'/src/views/valuesets/_compose_form.html'\"></div>\n" +
+    "    <hr/>\n" +
+    "    <div class=\"form-group\">\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "  </form>\n" +
     "</div>\n" +
     "\n" +
