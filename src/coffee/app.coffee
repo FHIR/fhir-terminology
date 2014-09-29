@@ -35,17 +35,8 @@ app.run ($q, $rootScope, menu, auth, valuesetRepo)->
 
 app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 
-
-app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
-  u.fixCodeMirror($scope)
-
-  # $scope.v.publisher = u.displayName if u?
-
-  $scope.valueset = valuesetRepo.$build()
-  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true
-
-
-  $scope.save = ()->
+mkSave = ($scope, valuesetRepo, $location)->
+  ()->
     user = $scope.auth.auth.user
     vs = $scope.valueset
     errors = vs.$validate()
@@ -62,6 +53,17 @@ app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) -
       console.log(entry)
       valuesetRepo.$create(entry, user)
       $location.path("/vs/#{entry.id}")
+
+app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
+  u.fixCodeMirror($scope)
+
+  # $scope.v.publisher = u.displayName if u?
+
+  $scope.valueset = valuesetRepo.$build()
+  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true
+
+
+  $scope.save = mkSave($scope, valuesetRepo, $location)
 
 app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
   id = $routeParams.id
@@ -84,4 +86,5 @@ app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo
     $scope.valueset = valuesetRepo.$build(v.content)
 
   u.fixCodeMirror($scope)
-  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true
+  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson() if x?), true
+  $scope.save = mkSave($scope, valuesetRepo, $location)
