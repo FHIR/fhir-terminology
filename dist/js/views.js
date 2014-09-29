@@ -2,105 +2,143 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('/src/views/valuesets/_compose_form.html',
-    "<a ng-if=\"!v.compose\" class=\"btn btn-default\" ng-click=\"addCompose()\">\n" +
+    "<a ng-if=\"!valueset.compose\" class=\"btn btn-default\" ng-click=\"valueset.$addCompose()\">\n" +
     "  Add Compose\n" +
     "</a>\n" +
-    "<div ng-if=\"v.compose\">\n" +
-    "  <div ng-repeat=\"inc in v.compose.include\">\n" +
-    "    <h3>Definition <a class=\"btn btn-danger\" ng-click=\"rmCompose()\">remove</a></h3>\n" +
-    "    <div class=\"form-group\">\n" +
-    "      <label class=\"col-sm-2 control-label\">system</label>\n" +
-    "      <div class=\"col-sm-10\">\n" +
-    "        <input type=\"text\" class=\"form-control\"\n" +
-    "        ng-model=\"inc.system\" placeholder=\"system\"/>\n" +
-    "      </div>\n" +
+    "<div ng-if=\"valueset.compose\">\n" +
+    "  <h3>Compose: <a class=\"btn btn-danger\" ng-click=\"valueset.$rmCompose()\">remove</a></h3>\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <label class=\"col-sm-2 control-label\">import</label>\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "      <input type=\"text\" class=\"form-control\" ng-model=\"valueset.compose.import\" placeholder=\"url\"/>\n" +
     "    </div>\n" +
-    "    <div class=\"form-group\">\n" +
-    "      <label class=\"col-sm-2 control-label\">version</label>\n" +
-    "      <div class=\"col-sm-10\">\n" +
-    "        <input type=\"text\" class=\"form-control\"\n" +
-    "        ng-model=\"inc.version\" placeholder=\"version\"/>\n" +
-    "      </div>\n" +
+    "  </div>\n" +
+    "  <hr/>\n" +
+    "\n" +
+    "  <h4>..Includes:\n" +
+    "    <a ng-click=\"valueset.compose.$addInclude()\"\n" +
+    "      class=\"btn btn-default\">Add include</a>\n" +
+    "  </h4>\n" +
+    "  <div class=\"form-group\" ng-repeat=\"conceptSet in valueset.compose.include\">\n" +
+    "    <div class=\"col-sm-11 col-sm-offset-1\">\n" +
+    "      <h4>....Include:\n" +
+    "        <a class=\"btn btn-danger\" ng-click=\"valueset.compose.$rmInclude(conceptSet)\">remove</a>\n" +
+    "      </h4>\n" +
+    "      <div ng-include src=\"'/src/views/valuesets/_concept_set_form.html'\"></div>\n" +
     "    </div>\n" +
-    "    <hr/>\n" +
-    "    <div class=\"form-group\" ng-repeat=\"i in inc.code\">\n" +
-    "      <label class=\"col-sm-2 control-label\">code</label>\n" +
-    "      <div class=\"col-sm-2\">\n" +
-    "        <input type=\"text\"\n" +
-    "        class=\"form-control\"\n" +
-    "        placeholder=\"code\"\n" +
-    "        ng-model=\"i.code\"/>\n" +
-    "      </div>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <hr/>\n" +
+    "  <h4>..Excludes:\n" +
+    "    <a ng-click=\"valueset.compose.$addExclude()\"\n" +
+    "      class=\"btn btn-default\">Add exclude</a>\n" +
+    "  </h4>\n" +
+    "  <div class=\"form-group\" ng-repeat=\"conceptSet in valueset.compose.exclude\">\n" +
+    "    <div class=\"col-sm-11 col-sm-offset-1\">\n" +
+    "      <h4>....Exclude:\n" +
+    "        <a class=\"btn btn-danger\" ng-click=\"valueset.compose.$rmExclude(conceptSet)\">remove</a>\n" +
+    "      </h4>\n" +
+    "      <div ng-include src=\"'/src/views/valuesets/_concept_set_form.html'\"></div>\n" +
     "    </div>\n" +
-    "    <div class=\"form-group\">\n" +
-    "      <div class=\"col-sm-12\">\n" +
-    "        <a ng-click=\"addCode()\" class=\"col-sm-12 btn btn-default\">Add Code</a>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('/src/views/valuesets/_concept_set_form.html',
+    "<div class=\"form-group\">\n" +
+    "  <label class=\"col-sm-2 control-label\">system</label>\n" +
+    "  <div class=\"col-sm-10\">\n" +
+    "    <input type=\"text\" class=\"form-control\"\n" +
+    "    ng-model=\"conceptSet.system\" placeholder=\"system\"/>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "<div class=\"form-group\">\n" +
+    "  <label class=\"col-sm-2 control-label\">version</label>\n" +
+    "  <div class=\"col-sm-10\">\n" +
+    "    <input type=\"text\" class=\"form-control\"\n" +
+    "    ng-model=\"conceptSet.version\" placeholder=\"version\"/>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "<hr/>\n" +
+    "<div class=\"form-group\" ng-repeat=\"code in conceptSet.code\">\n" +
+    "  <label class=\"col-sm-2 control-label\">code</label>\n" +
+    "  <div class=\"col-sm-5\">\n" +
+    "    <input type=\"text\" class=\"form-control\"\n" +
+    "      placeholder=\"code\" ng-model=\"code.code\"/>\n" +
+    "  </div>\n" +
+    "  <div class=\"col-sm-1\">\n" +
+    "    <a ng-click=\"conceptSet.$rmCode(code)\" class=\"btn btn-danger col-sm-12\"> × </a>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "<div class=\"form-group\">\n" +
+    "  <div class=\"col-sm-10 col-sm-offset-2\">\n" +
+    "    <a ng-click=\"conceptSet.$addCode()\" class=\"col-sm-12 btn btn-default\">Add Code</a>\n" +
     "  </div>\n" +
     "</div>\n"
   );
 
 
   $templateCache.put('/src/views/valuesets/_definition_form.html',
-    "<a ng-if=\"!v.define.concept\" class=\"btn btn-default\" ng-click=\"addDefinition()\">\n" +
+    "<a ng-if=\"!valueset.define\" class=\"btn btn-default\" ng-click=\"valueset.$addDefine()\">\n" +
     "  Add Definition\n" +
     "</a>\n" +
-    "<div ng-if=\"v.define.concept\">\n" +
+    "<div ng-if=\"valueset.define\">\n" +
     "  <h3>\n" +
     "    Definition\n" +
-    "    <a class=\"btn btn-danger\" ng-click=\"rmDefinition()\">remove</a>\n" +
+    "    <a class=\"btn btn-danger\" ng-click=\"valueset.$rmDefine()\">remove</a>\n" +
     "  </h3>\n" +
     "  <hr/>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">system</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
     "      <input type=\"text\" class=\"form-control\"\n" +
-    "      ng-model=\"v.define.system\" placeholder=\"system\"/>\n" +
+    "      ng-model=\"valueset.define.system\" placeholder=\"system\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">version</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
     "      <input type=\"text\" class=\"form-control\"\n" +
-    "      ng-model=\"v.define.version\" placeholder=\"version\"/>\n" +
+    "      ng-model=\"valueset.define.version\" placeholder=\"version\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
-    "    <label class=\"col-sm-2 control-label\">version</label>\n" +
+    "    <label class=\"col-sm-2 control-label\">caseSensitive</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
     "      <div class=\"col-sm-1 checkbox\">\n" +
     "        <label>\n" +
-    "          <input type=\"checkbox\" ng-model=\"v.define.caseSensitive\"/>\n" +
-    "          Case Sensitive\n" +
+    "          <input type=\"checkbox\" ng-model=\"valueset.define.caseSensitive\"/>\n" +
+    "          CaseSensitive\n" +
     "        </label>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <hr/>\n" +
-    "  <div class=\"form-group\" ng-repeat=\"i in v.define.concept\">\n" +
+    "  <div class=\"form-group\" ng-repeat=\"concept in valueset.define.concept\">\n" +
     "    <div class=\"col-sm-1 checkbox\">\n" +
     "      <label>\n" +
-    "        <input type=\"checkbox\" ng-model=\"i.abstract\"/>\n" +
+    "        <input type=\"checkbox\" ng-model=\"concept.abstract\"/>\n" +
     "        Abstract\n" +
     "      </label>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-2\">\n" +
-    "      <input type=\"text\" class=\"form-control\" placeholder=\"code\" ng-model=\"i.code\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"code\" ng-model=\"concept.code\">\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-4\">\n" +
-    "      <input type=\"text\" class=\"form-control\" placeholder=\"definition\" ng-model=\"i.definition\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"definition\" ng-model=\"concept.definition\">\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-4\">\n" +
-    "      <input type=\"text\" class=\"form-control\" placeholder=\"display\" ng-model=\"i.display\">\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"display\" ng-model=\"concept.display\">\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-1\">\n" +
-    "      <a ng-click=\"rmConcept(i)\" class=\"btn btn-danger col-sm-12\"> × </a>\n" +
+    "      <a ng-click=\"valueset.define.$rmConcept(concept)\" class=\"btn btn-danger col-sm-12\"> × </a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <div class=\"col-sm-12\">\n" +
-    "      <a ng-click=\"addConcept()\" class=\"col-sm-12 btn btn-default\">Add Concept</a>\n" +
+    "      <a ng-click=\"valueset.define.$addConcept()\" class=\"col-sm-12 btn btn-default\">Add Concept</a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n"
@@ -109,6 +147,9 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('/src/views/valuesets/_header.html',
     "<h1>\n" +
+    "  <img title=\"{{entry.user.name}}\"\n" +
+    "       class=\"avatar\" ng-src=\"{{(entry.user && entry.user.avatar) || 'http://www.hl7.org/implement/standards/fhir/v0.08/flame128.png'}}\"/>\n" +
+    "  {{item | json}}\n" +
     "  {{valueset.content.name}}\n" +
     "  <a class=\"btn btn-default\">\n" +
     "    <b>v:</b> {{valueset.content.version}}\n" +
@@ -119,6 +160,8 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "  <div class=\"btn-group pull-right\">\n" +
     "    <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='info' >info</a>\n" +
     "    <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='json'>json</a>\n" +
+    "    <a class=\"btn btn-danger\" ng-click=\"remove()\">remove</a>\n" +
+    "    <a class=\"btn btn-success\" href=\"#/vs/{{entry.id}}/edit\">edit</a>\n" +
     "  </div>\n" +
     "</h1>\n" +
     "<hr/>\n" +
@@ -173,51 +216,40 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('/src/views/valuesets/_info_form.html',
     "<div>\n" +
-    "  <div ng-if=\"errors\" class=\"form-group\">\n" +
-    "    <div class=\"col-sm-offset-2 col-sm-10\">\n" +
-    "      <div class=\"alert alert-danger\">\n" +
-    "        <ul>\n" +
-    "          <li ng-repeat=\"(f,e) in errors\">\n" +
-    "          <b>{{f}}</b> {{e}}\n" +
-    "          </li>\n" +
-    "        </ul>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">name</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <input name=\"name\" require type=\"text\" class=\"form-control\" ng-model=\"v.name\" placeholder=\"name\"/>\n" +
+    "      <input name=\"name\" require type=\"text\" class=\"form-control\" ng-model=\"valueset.name\" placeholder=\"name\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">identifier</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <input type=\"text\" class=\"form-control\" placeholder=\"id\" ng-model=\"v.identifier\"/>\n" +
+    "      <input type=\"text\" class=\"form-control\" placeholder=\"id\" ng-model=\"valueset.identifier\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">version</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <input type=\"text\" class=\"form-control\" ng-model=\"v.version\" placeholder=\"version\"/>\n" +
+    "      <input type=\"text\" class=\"form-control\" ng-model=\"valueset.version\" placeholder=\"version\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">publisher</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <input type=\"text\" class=\"form-control\" ng-model=\"v.publisher\" placeholder=\"publisher\"/>\n" +
+    "      <input type=\"text\" class=\"form-control\" ng-model=\"valueset.publisher\" placeholder=\"publisher\"/>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">description</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <textarea type=\"text\" class=\"form-control\" ng-model=\"v.description\"></textarea>\n" +
+    "      <textarea type=\"text\" class=\"form-control\" ng-model=\"valueset.description\"></textarea>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"form-group\">\n" +
     "    <label class=\"col-sm-2 control-label\">status</label>\n" +
     "    <div class=\"col-sm-10\">\n" +
-    "      <select ng-options=\"l as l for l in statuses\" ng-model=\"v.status\" placeholder=\"status\" class=\"form-control\"> </select>\n" +
+    "      <select ng-options=\"l as l for l in valueset.$statuses\" ng-model=\"valueset.status\" placeholder=\"status\" class=\"form-control\"> </select>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <!-- <telecom><1!-- 0..* Contact Contact information of the publisher § --1></telecom> -->\n" +
@@ -229,7 +261,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('/src/views/valuesets/new.html',
+  $templateCache.put('/src/views/valuesets/edit.html',
     "<h2>ValueSet\n" +
     "  <div class=\"btn-group pull-right\">\n" +
     "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"form\">form</a>\n" +
@@ -241,6 +273,17 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div ng-show=\"state=='form'\">\n" +
     "  <form class=\"form-horizontal\" role=\"form\" ng-submit=\"save()\">\n" +
+    "    <div ng-if=\"errors\" class=\"form-group\">\n" +
+    "      <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "        <div class=\"alert alert-danger\">\n" +
+    "          <ul>\n" +
+    "            <li ng-repeat=\"(f,e) in errors\">\n" +
+    "            <b>{{f}}</b> {{e}}\n" +
+    "            </li>\n" +
+    "          </ul>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "    <div ng-include src=\"'/src/views/valuesets/_info_form.html'\"></div>\n" +
     "    <hr/>\n" +
     "    <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div>\n" +
@@ -249,16 +292,81 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    <hr/>\n" +
     "    <div class=\"form-group\">\n" +
     "      <div class=\"col-sm-6\">\n" +
-    "        <button type=\"submit\" class=\"col-sm-12 btn btn-success\">\n" +
-    "          Save\n" +
-    "        </button>\n" +
+    "        <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button>\n" +
     "      </div>\n" +
     "      <div class=\"col-sm-6\">\n" +
-    "        <a href=\"#/\" class=\"col-sm-12 btn btn-default\">\n" +
-    "          Cancel\n" +
-    "        </a>\n" +
+    "        <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a>\n" +
     "      </div>\n" +
     "    </div>\n" +
+    "  </form>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"state=='json'\">\n" +
+    "  <ui-codemirror\n" +
+    "  style=\"min-height: 1000px;\"\n" +
+    "  ui-codemirror-opts=\"{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}\"\n" +
+    "  ui-refresh=\"state=='json'\"\n" +
+    "  ng-model='vjson'>\n" +
+    "  </ui-codemirror>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('/src/views/valuesets/index.html',
+    "<div class=\"well\">\n" +
+    "  <input placeholder=\"search by prefixes\" class=\"form-control srch\" ng-model=\"search\"/>\n" +
+    "</div>\n" +
+    "<a href=\"#/vs/{{entry.id}}\" class=\"srch-res\" ng-repeat=\"entry in valuesets | vsearch:search | limitTo:30\">\n" +
+    "  <h4>\n" +
+    "    <img title=\"{{entry.user.name}}\"\n" +
+    "         class=\"avatar\" ng-src=\"{{(entry.user && entry.user.avatar) || 'http://www.hl7.org/implement/standards/fhir/v0.08/flame128.png'}}\"/>\n" +
+    "    {{entry.name}}\n" +
+    "  </h4>\n" +
+    "  <p>\n" +
+    "    {{entry.desc}}\n" +
+    "  </p>\n" +
+    "  <i class=\"fa fa-chevron-right\"></i>\n" +
+    "</a>\n"
+  );
+
+
+  $templateCache.put('/src/views/valuesets/new.html',
+    "<h2 ng-init=\"state='form'\">ValueSet\n" +
+    "  <div class=\"btn-group pull-right\">\n" +
+    "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"form\">form</a>\n" +
+    "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"json\">json</a>\n" +
+    "  </div>\n" +
+    "</h2>\n" +
+    "\n" +
+    "<hr/>\n" +
+    "\n" +
+    "<div ng-show=\"state=='form'\">\n" +
+    "  <form class=\"form-horizontal\" role=\"form\" ng-submit=\"save()\">\n" +
+    "    <div ng-if=\"errors\" class=\"form-group\">\n" +
+    "      <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "        <div class=\"alert alert-danger\">\n" +
+    "          <ul>\n" +
+    "            <li ng-repeat=\"(f,e) in errors\">\n" +
+    "            <b>{{f}}</b> {{e}}\n" +
+    "            </li>\n" +
+    "          </ul>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <div ng-include src=\"'/src/views/valuesets/_info_form.html'\"></div>\n" +
+    "    <hr/>\n" +
+    "    <!-- <div ng-include src=\"'/src/views/valuesets/_definition_form.html'\"></div> -->\n" +
+    "    <!-- <hr/> -->\n" +
+    "    <!-- <div ng-include src=\"'/src/views/valuesets/_compose_form.html'\"></div> -->\n" +
+    "    <!-- <hr/> -->\n" +
+    "    <!-- <div class=\"form-group\"> -->\n" +
+    "    <!--   <div class=\"col-sm-6\"> -->\n" +
+    "    <!--     <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button> -->\n" +
+    "    <!--   </div> -->\n" +
+    "    <!--   <div class=\"col-sm-6\"> -->\n" +
+    "    <!--     <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a> -->\n" +
+    "    <!--   </div> -->\n" +
+    "    <!-- </div> -->\n" +
     "  </form>\n" +
     "</div>\n" +
     "\n" +
@@ -283,24 +391,6 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "    <pre> {{valueset | json }} </pre>\n" +
     "  </div>\n" +
     "</div>\n"
-  );
-
-
-  $templateCache.put('/src/views/welcome.html',
-    "<div class=\"well\">\n" +
-    "  <input placeholder=\"search by prefixes\" class=\"form-control srch\" ng-model=\"search\"/>\n" +
-    "</div>\n" +
-    "<a href=\"#/vs/{{entry.id}}\" class=\"srch-res\" ng-repeat=\"entry in valuesets | vsearch:search | limitTo:30\">\n" +
-    "  <h4>\n" +
-    "    <img title=\"{{entry.user.name}}\"\n" +
-    "         class=\"avatar\" ng-src=\"{{(entry.user && entry.user.avatar) || 'http://www.hl7.org/implement/standards/fhir/v0.08/flame128.png'}}\"/>\n" +
-    "    {{entry.name}}\n" +
-    "  </h4>\n" +
-    "  <p>\n" +
-    "    {{entry.desc}}\n" +
-    "  </p>\n" +
-    "  <i class=\"fa fa-chevron-right\"></i>\n" +
-    "</a>\n"
   );
 
 }]);
