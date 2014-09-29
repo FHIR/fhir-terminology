@@ -1,5 +1,6 @@
 # ValueSet model
 u = require('./utils')
+
 #TODO
 notEmpty = (x)-> x && x.trim() != ''
 
@@ -10,9 +11,9 @@ _check = (pred, [key,er], ers)->
 
 _validate = (vs)->
   errors = {}
-  _check notEmpty(vs.identifier), ['identifier', 'is required'], errors
+  _check notEmpty(vs.identifier),  ['identifier', 'is required'], errors
   _check notEmpty(vs.description), ['description', 'is required'], errors
-  _check notEmpty(vs.name), ['name', 'is required'], errors
+  _check notEmpty(vs.name),        ['name', 'is required'], errors
   errors
 
 mkDefine = (attrs)->
@@ -53,7 +54,7 @@ mkCompose = (attrs)->
 
   angular.extend(compose, attrs, colls, methods)
 
-exports.mkValueSet = (attrs)->
+mkValueSet = (attrs)->
   attrs || = {}
   define =mkDefine(attrs.define)
   console.log(define)
@@ -89,3 +90,8 @@ exports.mkValueSet = (attrs)->
           content: angular.copy(valueset)))
 
   angular.extend(valueset, defaults, attrs, methods)
+
+exports.mkConceptSet = mkConceptSet
+exports.mkDefine = mkDefine
+exports.mkCompose = mkCompose
+exports.mkValueSet = mkValueSet
