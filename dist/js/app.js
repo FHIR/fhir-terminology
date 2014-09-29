@@ -45,7 +45,7 @@ var fhirface =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var app, u;
+	var app, mkSave, u;
 
 	app = __webpack_require__(1);
 
@@ -95,13 +95,8 @@ var fhirface =
 
 	app.controller('WelcomeCtrl', function($scope, $http, $firebase) {});
 
-	app.controller('NewValueSetCtrl', function($scope, $firebase, $location, valuesetRepo) {
-	  u.fixCodeMirror($scope);
-	  $scope.valueset = valuesetRepo.$build();
-	  $scope.$watch('valueset', (function(x) {
-	    return $scope.vjson = x.$toJson();
-	  }), true);
-	  return $scope.save = function() {
+	mkSave = function($scope, valuesetRepo, $location) {
+	  return function() {
 	    var entry, errors, user, vs;
 	    user = $scope.auth.auth.user;
 	    vs = $scope.valueset;
@@ -120,6 +115,15 @@ var fhirface =
 	      return $location.path("/vs/" + entry.id);
 	    }
 	  };
+	};
+
+	app.controller('NewValueSetCtrl', function($scope, $firebase, $location, valuesetRepo) {
+	  u.fixCodeMirror($scope);
+	  $scope.valueset = valuesetRepo.$build();
+	  $scope.$watch('valueset', (function(x) {
+	    return $scope.vjson = x.$toJson();
+	  }), true);
+	  return $scope.save = mkSave($scope, valuesetRepo, $location);
 	});
 
 	app.controller('ShowValueSetCtrl', function($routeParams, $scope, valueset, valuesetRepo, $location) {
@@ -147,9 +151,12 @@ var fhirface =
 	    return $scope.valueset = valuesetRepo.$build(v.content);
 	  });
 	  u.fixCodeMirror($scope);
-	  return $scope.$watch('valueset', (function(x) {
-	    return $scope.vjson = x.$toJson();
+	  $scope.$watch('valueset', (function(x) {
+	    if (x != null) {
+	      return $scope.vjson = x.$toJson();
+	    }
 	  }), true);
+	  return $scope.save = mkSave($scope, valuesetRepo, $location);
 	});
 
 
