@@ -37,7 +37,6 @@ app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 
 
 app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
-  # hack to fix code mirror
   u.fixCodeMirror($scope)
 
   # $scope.v.publisher = u.displayName if u?
@@ -75,6 +74,7 @@ app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo
     $location.path("/")
 
 app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
+
   id = $routeParams.id
   valueset($scope, 'valuesetOrig', id)
   item = null
@@ -82,3 +82,6 @@ app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo
     return if !v? || inited
     inited = v
     $scope.valueset = valuesetRepo.$build(v.content)
+
+  u.fixCodeMirror($scope)
+  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true

@@ -31,7 +31,7 @@ mkConceptSet = (attrs)->
   set = {code: []}
   methods =
     $addCode: ()->
-      set.code.push {}
+      set.code.push ""
     $rmCode: (x)->
       set.code = u.rm(x,set.code)
   angular.extend(set, attrs, methods)
@@ -56,8 +56,7 @@ mkCompose = (attrs)->
 
 mkValueSet = (attrs)->
   attrs || = {}
-  define =mkDefine(attrs.define)
-  console.log(define)
+  define = mkDefine(attrs.define)
   compose = mkCompose(attrs.compose)
   valueset = {}
 
@@ -67,9 +66,8 @@ mkValueSet = (attrs)->
     status: 'draft'
     identifier: 'myid1'
 
+
   methods =
-    define: define
-    compose: compose
     $statuses: ['draft','active','retired']
     $addDefine: ->
       valueset.define = define
@@ -88,6 +86,9 @@ mkValueSet = (attrs)->
         angular.toJson(
           id: u.sha(valueset.identifier || valueset.name)
           content: angular.copy(valueset)))
+
+  methods.define = define if attrs.define?
+  methods.compose = compose if attrs.compose?
 
   angular.extend(valueset, defaults, attrs, methods)
 
