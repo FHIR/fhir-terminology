@@ -1,6 +1,8 @@
 FHIR value set editor
 =========
 
+[![Build Status](https://travis-ci.org/FHIR/fhir-terminology.svg)](https://travis-ci.org/FHIR/fhir-terminology)
+
 ## Demo
 
 [Live Demo](http://fhir.github.io/fhir-terminology)
