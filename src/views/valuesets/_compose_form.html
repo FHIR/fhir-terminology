@@ -1,37 +1,41 @@
-<a ng-if="!v.compose" class="btn btn-default" ng-click="addCompose()">
+<a ng-if="!valueset.compose" class="btn btn-default" ng-click="valueset.$addCompose()">
   Add Compose
 </a>
-<div ng-if="v.compose">
-  <div ng-repeat="inc in v.compose.include">
-    <h3>Definition <a class="btn btn-danger" ng-click="rmCompose()">remove</a></h3>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">system</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control"
-        ng-model="inc.system" placeholder="system"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-sm-2 control-label">version</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control"
-        ng-model="inc.version" placeholder="version"/>
-      </div>
-    </div>
-    <hr/>
-    <div class="form-group" ng-repeat="i in inc.code">
-      <label class="col-sm-2 control-label">code</label>
-      <div class="col-sm-2">
-        <input type="text"
-        class="form-control"
-        placeholder="code"
-        ng-model="i.code"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-12">
-        <a ng-click="addCode()" class="col-sm-12 btn btn-default">Add Code</a>
-      </div>
+<div ng-if="valueset.compose">
+  <h3>Compose: <a class="btn btn-danger" ng-click="valueset.$rmCompose()">remove</a></h3>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">import</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" ng-model="valueset.compose.import" placeholder="url"/>
     </div>
   </div>
+  <hr/>
+
+  <h4>..Includes:
+    <a ng-click="valueset.compose.$addInclude()"
+      class="btn btn-default">Add include</a>
+  </h4>
+  <div class="form-group" ng-repeat="conceptSet in valueset.compose.include">
+    <div class="col-sm-11 col-sm-offset-1">
+      <h4>....Include:
+        <a class="btn btn-danger" ng-click="valueset.compose.$rmInclude(conceptSet)">remove</a>
+      </h4>
+      <div ng-include src="'/src/views/valuesets/_concept_set_form.html'"></div>
+    </div>
+  </div>
+
+  <hr/>
+  <h4>..Excludes:
+    <a ng-click="valueset.compose.$addExclude()"
+      class="btn btn-default">Add exclude</a>
+  </h4>
+  <div class="form-group" ng-repeat="conceptSet in valueset.compose.exclude">
+    <div class="col-sm-11 col-sm-offset-1">
+      <h4>....Exclude:
+        <a class="btn btn-danger" ng-click="valueset.compose.$rmExclude(conceptSet)">remove</a>
+      </h4>
+      <div ng-include src="'/src/views/valuesets/_concept_set_form.html'"></div>
+    </div>
+  </div>
+
 </div>

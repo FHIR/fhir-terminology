@@ -1,10 +1,10 @@
-<h2 ng-init="state='form'">ValueSet
+<h2>ValueSet
   <div class="btn-group pull-right">
     <a class="btn btn-default" switcher="state" swvalue="form">form</a>
     <a class="btn btn-default" switcher="state" swvalue="json">json</a>
+    <!-- <a class="btn btn-default" switcher="state" swvalue="info">info</a> -->
   </div>
 </h2>
-
 <hr/>
 
 <div ng-show="state=='form'">
@@ -22,18 +22,18 @@
     </div>
     <div ng-include src="'/src/views/valuesets/_info_form.html'"></div>
     <hr/>
-    <!-- <div ng-include src="'/src/views/valuesets/_definition_form.html'"></div> -->
-    <!-- <hr/> -->
-    <!-- <div ng-include src="'/src/views/valuesets/_compose_form.html'"></div> -->
-    <!-- <hr/> -->
-    <!-- <div class="form-group"> -->
-    <!--   <div class="col-sm-6"> -->
-    <!--     <button type="submit" class="col-sm-12 btn btn-success"> Save </button> -->
-    <!--   </div> -->
-    <!--   <div class="col-sm-6"> -->
-    <!--     <a href="#/" class="col-sm-12 btn btn-default"> Cancel </a> -->
-    <!--   </div> -->
-    <!-- </div> -->
+    <div ng-include src="'/src/views/valuesets/_definition_form.html'"></div>
+    <hr/>
+    <div ng-include src="'/src/views/valuesets/_compose_form.html'"></div>
+    <hr/>
+    <div class="form-group">
+      <div class="col-sm-6">
+        <button type="submit" class="col-sm-12 btn btn-success"> Save </button>
+      </div>
+      <div class="col-sm-6">
+        <a href="#/" class="col-sm-12 btn btn-default"> Cancel </a>
+      </div>
+    </div>
   </form>
 </div>
 

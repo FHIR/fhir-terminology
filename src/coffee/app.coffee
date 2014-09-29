@@ -2,57 +2,83 @@ app = require('./module')
 require('./filters')
 require('./services')
 require('./directives')
-require('./controllers')
-sha = require('jssha')
+require('./data')
+u = require('./utils')
 
 app.config ($routeProvider) ->
   $routeProvider
     .when '/',
-      templateUrl: '/src/views/welcome.html'
+      templateUrl: '/src/views/valuesets/index.html'
       controller: 'WelcomeCtrl'
     .when '/vs/:id',
       templateUrl: '/src/views/valuesets/show.html'
       controller: 'ShowValueSetCtrl'
+    .when '/vs/:id/edit',
+      templateUrl: '/src/views/valuesets/edit.html'
+      controller: 'EditValueSetCtrl'
     .when '/new',
       templateUrl: '/src/views/valuesets/new.html'
       controller: 'NewValueSetCtrl'
     .otherwise
       redirectTo: '/'
 
-app.run ($q, $rootScope, menu, cache, $http, $firebase, $firebaseSimpleLogin)->
+app.run ($q, $rootScope, menu, auth, valuesetRepo)->
   $rootScope.menu = menu.build(
     {url: '/', label: 'Value Sets'}
     {url: '/new', label: 'New', icon: 'add'}
   )
 
+  $rootScope.auth = auth
+  $rootScope.valuesets = valuesetRepo.$list()
+  $rootScope.batch = ()->
+    valuesetRepo.$batch()
+
+app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 
 
-  fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
-  fba = $firebaseSimpleLogin(fbr)
-  $rootScope.firebaseRef = fbr
-  $rootScope.auth = fba
+app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
+  # hack to fix code mirror
+  u.fixCodeMirror($scope)
+
+  # $scope.v.publisher = u.displayName if u?
+
+  $scope.valueset = valuesetRepo.$build()
+  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true
 
 
-  $rootScope.login = ()->
-    fba.$login('github')
+  $scope.save = ()->
+    user = $scope.auth.auth.user
+    vs = $scope.valueset
+    errors = vs.$validate()
 
-  $rootScope.logout = ()->
-    console.log('logout')
-    fba.$logout()
+    unless user?
+      errors.$error = true
+      errors.user = "Please login"
 
-  fbr = new Firebase('https://fhir-terminology.firebaseio.com/valuesetList')
-  vsChan = $firebase(fbr)
-  valuesets = vsChan.$asArray()
-  console.log(valuesets)
-  $rootScope.valuesets = valuesets
-  # valuesets.$bindTo($rootScope, "valuesets")
+    if errors.$error
+      $scope.errors = errors
+    else
+      delete $scope.errors
+      entry = vs.$toEntry()
+      console.log(entry)
+      valuesetRepo.$create(entry, user)
+      $location.path("/vs/#{entry.id}")
 
-  # $rootScope.$watch 'valuesets', (v)->
-  #   return unless v
-  #   list = for id, e of v when id? and e? and e.content?
-  #     {id: id, name: e.content.name, desc: e.content.description}
-  #   fbr = new Firebase('https://fhir-terminology.firebaseio.com')
-  #   vsChan = $firebase(fbr)
-  #   vsChan.$set('valuesetList', list)
+app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
+  id = $routeParams.id
+  valueset($scope, 'valueset', id)
 
+  valuesetRepo.$bindListItem(id, $scope, 'entry')
 
+  $scope.remove = ()->
+    valuesetRepo.$remove(id)
+    $location.path("/")
+
+app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
+  id = $routeParams.id
+  valueset($scope, 'valuesetOrig', id)
+  item = null
+  $scope.$watch 'valuesetOrig', (v)->
+    return if !v? || inited
+    inited = v
+    $scope.valueset = valuesetRepo.$build(v.content)
