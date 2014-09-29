@@ -1,5 +1,6 @@
 # ValueSet model
 u = require('./utils')
+
 #TODO
 notEmpty = (x)-> x && x.trim() != ''
 
@@ -10,9 +11,9 @@ _check = (pred, [key,er], ers)->
 
 _validate = (vs)->
   errors = {}
-  _check notEmpty(vs.identifier), ['identifier', 'is required'], errors
+  _check notEmpty(vs.identifier),  ['identifier', 'is required'], errors
   _check notEmpty(vs.description), ['description', 'is required'], errors
-  _check notEmpty(vs.name), ['name', 'is required'], errors
+  _check notEmpty(vs.name),        ['name', 'is required'], errors
   errors
 
 mkDefine = (attrs)->
@@ -30,7 +31,7 @@ mkConceptSet = (attrs)->
   set = {code: []}
   methods =
     $addCode: ()->
-      set.code.push {}
+      set.code.push ""
     $rmCode: (x)->
       set.code = u.rm(x,set.code)
   angular.extend(set, attrs, methods)
@@ -53,10 +54,9 @@ mkCompose = (attrs)->
 
   angular.extend(compose, attrs, colls, methods)
 
-exports.mkValueSet = (attrs)->
+mkValueSet = (attrs)->
   attrs || = {}
-  define =mkDefine(attrs.define)
-  console.log(define)
+  define = mkDefine(attrs.define)
   compose = mkCompose(attrs.compose)
   valueset = {}
 
@@ -66,9 +66,8 @@ exports.mkValueSet = (attrs)->
     status: 'draft'
     identifier: 'myid1'
 
+
   methods =
-    define: define
-    compose: compose
     $statuses: ['draft','active','retired']
     $addDefine: ->
       valueset.define = define
@@ -88,4 +87,12 @@ exports.mkValueSet = (attrs)->
           id: u.sha(valueset.identifier || valueset.name)
           content: angular.copy(valueset)))
 
+  methods.define = define if attrs.define?
+  methods.compose = compose if attrs.compose?
+
   angular.extend(valueset, defaults, attrs, methods)
+
+exports.mkConceptSet = mkConceptSet
+exports.mkDefine = mkDefine
+exports.mkCompose = mkCompose
+exports.mkValueSet = mkValueSet

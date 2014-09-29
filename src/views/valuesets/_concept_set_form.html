@@ -13,11 +13,11 @@
   </div>
 </div>
 <hr/>
-<div class="form-group" ng-repeat="code in conceptSet.code">
+<div class="form-group" ng-repeat="code in conceptSet.code track by $index">
   <label class="col-sm-2 control-label">code</label>
   <div class="col-sm-5">
     <input type="text" class="form-control"
-      placeholder="code" ng-model="code.code"/>
+      placeholder="code" ng-model="conceptSet.code[$index]"/>
   </div>
   <div class="col-sm-1">
     <a ng-click="conceptSet.$rmCode(code)" class="btn btn-danger col-sm-12"> × </a>
