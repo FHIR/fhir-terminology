@@ -22,7 +22,7 @@
   <div ng-repeat="inc in entry.content.compose.include">
     <h2>Include: {{inc.system}} (entry.content {{inc.version}})</h2>
     <ul>
-      <li ng-repeat="c in inc.code"> {{c}} </li>
+      <li ng-repeat="c in inc.code track by $index"> {{c}} </li>
     </ul>
   </div>
 </div>
