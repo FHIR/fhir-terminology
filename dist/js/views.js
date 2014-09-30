@@ -266,7 +266,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "  <div ng-repeat=\"inc in entry.content.compose.include\">\n" +
     "    <h2>Include: {{inc.system}} (entry.content {{inc.version}})</h2>\n" +
     "    <ul>\n" +
-    "      <li ng-repeat=\"c in inc.code\"> {{c}} </li>\n" +
+    "      <li ng-repeat=\"c in inc.code track by $index\"> {{c}} </li>\n" +
     "    </ul>\n" +
     "  </div>\n" +
     "</div>\n" +
