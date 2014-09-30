@@ -19,8 +19,11 @@ app.config ($routeProvider) ->
     .when '/new',
       templateUrl: '/src/views/valuesets/new.html'
       controller: 'NewValueSetCtrl'
+    .when '/batch',
+      templateUrl: '/src/views/batch.html'
+      controller: 'BatchCtrl'
     .otherwise
-      redirectTo: '/'
+      templateUrl: '/src/view/404.html'
 
 app.run ($q, $rootScope, menu, auth, valuesetRepo)->
   $rootScope.menu = menu.build(
@@ -38,53 +41,62 @@ app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 mkSave = ($scope, valuesetRepo, $location)->
   ()->
     user = $scope.auth.auth.user
-    vs = $scope.valueset
-    errors = vs.$validate()
+    entry = $scope.entry
+    errors = entry.$validate()
 
     unless user?
       errors.$error = true
       errors.user = "Please login"
+    else
+      entry.user =
+        author: user.displayName
+        avatar: user.thirdPartyUserData.avatar_url
 
     if errors.$error
       $scope.errors = errors
     else
       delete $scope.errors
-      entry = vs.$toEntry()
-      console.log(entry)
-      valuesetRepo.$create(entry, user)
+      entry = valuesetRepo.$save(entry)
       $location.path("/vs/#{entry.id}")
 
 app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
   u.fixCodeMirror($scope)
 
-  # $scope.v.publisher = u.displayName if u?
+  $scope.entry = valuesetRepo.$build()
 
-  $scope.valueset = valuesetRepo.$build()
-  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson()), true
+  syncJson = (x)->
+    $scope.json = x.content.$toJson()
 
+  $scope.$watch 'entry', syncJson, true
 
   $scope.save = mkSave($scope, valuesetRepo, $location)
 
 app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
   id = $routeParams.id
-  valueset($scope, 'valueset', id)
-
-  valuesetRepo.$bindListItem(id, $scope, 'entry')
+  valueset($scope, 'entry', id)
 
   $scope.remove = ()->
     valuesetRepo.$remove(id)
     $location.path("/")
 
 app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
+  u.fixCodeMirror($scope)
 
   id = $routeParams.id
   valueset($scope, 'valuesetOrig', id)
-  item = null
+
+  inited = null
   $scope.$watch 'valuesetOrig', (v)->
     return if !v? || inited
-    inited = v
-    $scope.valueset = valuesetRepo.$build(v.content)
+    inited = true
+    $scope.entry = valuesetRepo.$build(v)
 
-  u.fixCodeMirror($scope)
-  $scope.$watch 'valueset', ((x)-> $scope.vjson = x.$toJson() if x?), true
+  syncJson = (x)->
+    $scope.json = x.content.$toJson()
+
+  $scope.$watch 'entry', syncJson, true
+
   $scope.save = mkSave($scope, valuesetRepo, $location)
+
+app.controller 'BatchCtrl', ($scope, valuesetRepo, $location) ->
+  $scope.batch = valuesetRepo.$batch
