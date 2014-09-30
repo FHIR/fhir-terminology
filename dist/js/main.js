@@ -72,8 +72,11 @@ var fhirface =
 	  }).when('/new', {
 	    templateUrl: '/src/views/valuesets/new.html',
 	    controller: 'NewValueSetCtrl'
+	  }).when('/batch', {
+	    templateUrl: '/src/views/batch.html',
+	    controller: 'BatchCtrl'
 	  }).otherwise({
-	    redirectTo: '/'
+	    templateUrl: '/src/view/404.html'
 	  });
 	});
 
@@ -97,40 +100,44 @@ var fhirface =
 
 	mkSave = function($scope, valuesetRepo, $location) {
 	  return function() {
-	    var entry, errors, user, vs;
+	    var entry, errors, user;
 	    user = $scope.auth.auth.user;
-	    vs = $scope.valueset;
-	    errors = vs.$validate();
+	    entry = $scope.entry;
+	    errors = entry.$validate();
 	    if (user == null) {
 	      errors.$error = true;
 	      errors.user = "Please login";
+	    } else {
+	      entry.user = {
+	        author: user.displayName,
+	        avatar: user.thirdPartyUserData.avatar_url
+	      };
 	    }
 	    if (errors.$error) {
 	      return $scope.errors = errors;
 	    } else {
 	      delete $scope.errors;
-	      entry = vs.$toEntry();
-	      console.log(entry);
-	      valuesetRepo.$create(entry, user);
+	      entry = valuesetRepo.$save(entry);
 	      return $location.path("/vs/" + entry.id);
 	    }
 	  };
 	};
 
 	app.controller('NewValueSetCtrl', function($scope, $firebase, $location, valuesetRepo) {
+	  var syncJson;
 	  u.fixCodeMirror($scope);
-	  $scope.valueset = valuesetRepo.$build();
-	  $scope.$watch('valueset', (function(x) {
-	    return $scope.vjson = x.$toJson();
-	  }), true);
+	  $scope.entry = valuesetRepo.$build();
+	  syncJson = function(x) {
+	    return $scope.json = x.content.$toJson();
+	  };
+	  $scope.$watch('entry', syncJson, true);
 	  return $scope.save = mkSave($scope, valuesetRepo, $location);
 	});
 
 	app.controller('ShowValueSetCtrl', function($routeParams, $scope, valueset, valuesetRepo, $location) {
 	  var id;
 	  id = $routeParams.id;
-	  valueset($scope, 'valueset', id);
-	  valuesetRepo.$bindListItem(id, $scope, 'entry');
+	  valueset($scope, 'entry', id);
 	  return $scope.remove = function() {
 	    valuesetRepo.$remove(id);
 	    return $location.path("/");
@@ -138,25 +145,27 @@ var fhirface =
 	});
 
 	app.controller('EditValueSetCtrl', function($routeParams, $scope, valueset, valuesetRepo, $location) {
-	  var id, item;
+	  var id, inited, syncJson;
+	  u.fixCodeMirror($scope);
 	  id = $routeParams.id;
 	  valueset($scope, 'valuesetOrig', id);
-	  item = null;
+	  inited = null;
 	  $scope.$watch('valuesetOrig', function(v) {
-	    var inited;
 	    if ((v == null) || inited) {
 	      return;
 	    }
-	    inited = v;
-	    return $scope.valueset = valuesetRepo.$build(v.content);
+	    inited = true;
+	    return $scope.entry = valuesetRepo.$build(v);
 	  });
-	  u.fixCodeMirror($scope);
-	  $scope.$watch('valueset', (function(x) {
-	    if (x != null) {
-	      return $scope.vjson = x.$toJson();
-	    }
-	  }), true);
+	  syncJson = function(x) {
+	    return $scope.json = x.content.$toJson();
+	  };
+	  $scope.$watch('entry', syncJson, true);
 	  return $scope.save = mkSave($scope, valuesetRepo, $location);
+	});
+
+	app.controller('BatchCtrl', function($scope, valuesetRepo, $location) {
+	  return $scope.batch = valuesetRepo.$batch;
 	});
 
 
@@ -210,7 +219,7 @@ var fhirface =
 	  };
 	};
 
-	app.filter('vsearch', mkfilter('name', 'desc'));
+	app.filter('vsearch', mkfilter('title', 'summary'));
 
 	app.filter('csearch', mkfilter('code', 'display', 'definition'));
 
@@ -225,39 +234,10 @@ var fhirface =
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var app, cache,
+	var app,
 	  __slice = [].slice;
 
 	app = __webpack_require__(1);
-
-	cache = function(d, key, missCb) {
-	  var st, val;
-	  st = window.localStorage;
-	  val = st.getItem(key);
-	  if (val) {
-	    console.log('cache.match');
-	    d.resolve(JSON.parse(val));
-	  } else {
-	    console.log('cache.missmatch');
-	    missCb(function(newval) {
-	      st.setItem(key, JSON.stringify(newval));
-	      return d.resolve(newval);
-	    });
-	  }
-	  return d.promise;
-	};
-
-	app.service('cache', function($http, $q) {
-	  return function(key, url) {
-	    return cache($q.defer(), key, function(save) {
-	      return $http({
-	        method: 'GET',
-	        url: url,
-	        success: save
-	      }).success(save);
-	    });
-	  };
-	});
 
 	app.provider('menu', function() {
 	  return {
@@ -366,7 +346,7 @@ var fhirface =
 	  list = valuesetList.$asArray();
 	  return {
 	    $build: function(attrs) {
-	      return vs.mkValueSet(attrs);
+	      return vs.mkEntry(attrs);
 	    },
 	    $bindListItem: function(id, scope, attr) {
 	      var item;
@@ -389,21 +369,13 @@ var fhirface =
 	      }
 	      return valuesets.$remove(id);
 	    },
-	    $create: function(v, u) {
-	      var user;
-	      valuesets.$set(v.id, angular.copy(v));
-	      if (u) {
-	        user = {
-	          author: u.displayName,
-	          avatar: u.thirdPartyUserData.avatar_url
-	        };
-	      }
-	      return valuesetList.$set(v.id, {
-	        id: v.id,
-	        name: v.content.name,
-	        desc: v.content.description,
-	        user: user
-	      });
+	    $save: function(entry) {
+	      var data;
+	      data = entry.$toObject();
+	      valuesets.$set(data.id, data);
+	      delete data.content;
+	      valuesetList.$set(data.id, data);
+	      return data;
 	    }
 	  };
 	});
@@ -451,7 +423,7 @@ var fhirface =
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mkCompose, mkConceptSet, mkDefine, mkValueSet, notEmpty, u, _check, _validate;
+	var copy, mkCompose, mkConceptSet, mkDefine, mkEntry, mkValueSet, notEmpty, u, _check, _validate;
 
 	u = __webpack_require__(6);
 
@@ -468,12 +440,13 @@ var fhirface =
 	  }
 	};
 
-	_validate = function(vs) {
+	_validate = function(entry) {
 	  var errors;
+	  console.log(entry);
 	  errors = {};
-	  _check(notEmpty(vs.identifier), ['identifier', 'is required'], errors);
-	  _check(notEmpty(vs.description), ['description', 'is required'], errors);
-	  _check(notEmpty(vs.name), ['name', 'is required'], errors);
+	  _check(notEmpty(entry.content.identifier), ['identifier', 'is required'], errors);
+	  _check(notEmpty(entry.content.description), ['description', 'is required'], errors);
+	  _check(notEmpty(entry.content.name), ['name', 'is required'], errors);
 	  return errors;
 	};
 
@@ -484,8 +457,8 @@ var fhirface =
 	    concept: []
 	  };
 	  methods = {
-	    $addConcept: function() {
-	      return define.concept.push({});
+	    $addConcept: function(x) {
+	      return define.concept.push(x || {});
 	    },
 	    $rmConcept: function(i) {
 	      return define.concept = u.rm(i, define.concept);
@@ -501,11 +474,14 @@ var fhirface =
 	    code: []
 	  };
 	  methods = {
-	    $addCode: function() {
-	      return set.code.push("");
+	    $addCode: function(x) {
+	      return set.code.push(x || "");
 	    },
 	    $rmCode: function(x) {
-	      return set.code = u.rm(x, set.code);
+	      if (x < 0) {
+	        return;
+	      }
+	      return set.code = set.code.splice(x, 1);
 	    }
 	  };
 	  return angular.extend(set, attrs, methods);
@@ -536,6 +512,10 @@ var fhirface =
 	  return angular.extend(compose, attrs, colls, methods);
 	};
 
+	copy = function(x) {
+	  return angular.fromJson(angular.toJson(x));
+	};
+
 	mkValueSet = function(attrs) {
 	  var compose, defaults, define, methods, valueset;
 	  attrs || (attrs = {});
@@ -543,10 +523,8 @@ var fhirface =
 	  compose = mkCompose(attrs.compose);
 	  valueset = {};
 	  defaults = {
-	    name: 'MyName',
 	    version: '0.0.1',
-	    status: 'draft',
-	    identifier: 'myid1'
+	    status: 'draft'
 	  };
 	  methods = {
 	    $statuses: ['draft', 'active', 'retired'],
@@ -564,15 +542,6 @@ var fhirface =
 	    },
 	    $toJson: function() {
 	      return angular.toJson(valueset, true);
-	    },
-	    $validate: function() {
-	      return _validate(valueset);
-	    },
-	    $toEntry: function() {
-	      return angular.fromJson(angular.toJson({
-	        id: u.sha(valueset.identifier || valueset.name),
-	        content: angular.copy(valueset)
-	      }));
 	    }
 	  };
 	  if (attrs.define != null) {
@@ -584,6 +553,30 @@ var fhirface =
 	  return angular.extend(valueset, defaults, attrs, methods);
 	};
 
+	mkEntry = function(attrs) {
+	  var entry, vs;
+	  attrs || (attrs = {});
+	  vs = mkValueSet(attrs.content);
+	  entry = {};
+	  return angular.extend(entry, attrs, {
+	    content: vs,
+	    $toJson: function() {
+	      return angular.toJson(entry);
+	    },
+	    $validate: function() {
+	      return _validate(entry);
+	    },
+	    $toObject: function() {
+	      var e;
+	      e = copy(entry);
+	      e.id = entry.id || u.sha(entry.content.identifier || entry.content.name);
+	      e.title = e.content.name;
+	      e.summary = e.content.description;
+	      return e;
+	    }
+	  });
+	};
+
 	exports.mkConceptSet = mkConceptSet;
 
 	exports.mkDefine = mkDefine;
@@ -591,6 +584,8 @@ var fhirface =
 	exports.mkCompose = mkCompose;
 
 	exports.mkValueSet = mkValueSet;
+
+	exports.mkEntry = mkEntry;
 
 
 /***/ },
