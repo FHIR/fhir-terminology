@@ -157,6 +157,21 @@ var fhirface =
 	    }
 	  };
 	  $scope.$watch('entry', syncJson, true);
+	  $scope.$watch('json', function(x) {
+	    var e, entry;
+	    if (x == null) {
+	      return;
+	    }
+	    entry = angular.copy($scope.entry);
+	    try {
+	      entry.content = angular.fromJson(x);
+	      delete $scope.parseError;
+	      return $scope.entry = valuesetRepo.$build(entry);
+	    } catch (_error) {
+	      e = _error;
+	      return $scope.parseError = e.toString();
+	    }
+	  });
 	  $scope.save = mkSave($scope, valuesetRepo, function() {
 	    return $scope.state = 'info';
 	  });
@@ -314,7 +329,7 @@ var fhirface =
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var BASE_URL, app, u, vs;
+	var BASE_URL, app, dateKey, u, vs;
 
 	app = __webpack_require__(1);
 
@@ -350,13 +365,18 @@ var fhirface =
 
 	BASE_URL = "https://fhir-terminology.firebaseio.com";
 
+	dateKey = function() {
+	  return (new Date()).toISOString().replace(/[-:.]/g, '_');
+	};
+
 	app.service('valuesetRepo', function($firebase) {
-	  var list, mkchan, valuesetList, valuesets;
+	  var audit, list, mkchan, valuesetList, valuesets;
 	  mkchan = function(url) {
 	    return $firebase(new Firebase(url));
 	  };
 	  valuesets = mkchan("" + BASE_URL + "/valuesets");
 	  valuesetList = mkchan("" + BASE_URL + "/valuesetList");
+	  audit = mkchan("" + BASE_URL + "/audit");
 	  list = valuesetList.$asArray();
 	  return {
 	    $build: function(attrs) {
@@ -389,6 +409,10 @@ var fhirface =
 	      valuesets.$set(data.id, data);
 	      delete data.content;
 	      valuesetList.$set(data.id, data);
+	      audit.$set(dateKey(), {
+	        action: 'save',
+	        data: data
+	      });
 	      return data;
 	    }
 	  };

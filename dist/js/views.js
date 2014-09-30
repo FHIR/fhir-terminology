@@ -341,10 +341,8 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "      <a class=\"btn btn-default\" switcher=\"state\" swvalue='json'>json</a>\n" +
     "    </div>\n" +
     "  </h1>\n" +
-    "\n" +
     "  <hr/>\n" +
     "  <div ng-show=\"state=='info'\">\n" +
-    "    <hr/>\n" +
     "    <p><b>id:</b> {{entry.content.identifier}}</p>\n" +
     "    <p><b>publisher:</b> {{entry.content.publisher}}</p>\n" +
     "\n" +
@@ -389,6 +387,9 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <div ng-show=\"state == 'json'\">\n" +
+    "    <div ng-if=\"parseError\" class=\"alert alert-danger\">\n" +
+    "      {{parseError}}\n" +
+    "    </div>\n" +
     "    <ui-codemirror\n" +
     "    style=\"min-height: 1000px;\"\n" +
     "    ui-codemirror-opts=\"{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}\"\n" +
