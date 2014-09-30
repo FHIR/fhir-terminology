@@ -26,7 +26,4 @@ app.filter 'sha', ()->
 app.filter 'countMore', ()->
   (x, count)->
     i = Math.max(x.length - count,0)
-    if i > 0
-      "#{i} more"
-    else
-      ""
+    if i > 0 then  "#{i} more" else ""

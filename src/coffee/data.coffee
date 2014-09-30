@@ -20,10 +20,14 @@ app.service 'valueset', ($firebase)->
 
 BASE_URL="https://fhir-terminology.firebaseio.com"
 
+dateKey = ()->
+  (new Date()).toISOString().replace(/[-:.]/g,'_')
+
 app.service 'valuesetRepo', ($firebase)->
   mkchan = (url)-> $firebase(new Firebase(url))
   valuesets = mkchan("#{BASE_URL}/valuesets")
   valuesetList = mkchan("#{BASE_URL}/valuesetList")
+  audit = mkchan("#{BASE_URL}/audit")
   list = valuesetList.$asArray()
 
   $build: (attrs)-> vs.mkEntry(attrs)
@@ -36,13 +40,6 @@ app.service 'valuesetRepo', ($firebase)->
 
   $batch: ()->
     console.log('batch')
-    # for id,v of valuesetList.$asObject()
-    #   if id.indexOf('$') != 0 && v.id && v.id == id
-    #     valuesetList.$set id,
-    #       id: id
-    #       title: v.name
-    #       summary: v.desc
-    #     console.log(id, v)
 
   $remove: (id)->
     for i in list
@@ -54,4 +51,5 @@ app.service 'valuesetRepo', ($firebase)->
     valuesets.$set(data.id, data)
     delete data.content
     valuesetList.$set data.id, data
+    audit.$set(dateKey(), {action: 'save', data: data})
     data
