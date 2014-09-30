@@ -38,7 +38,7 @@ app.run ($q, $rootScope, menu, auth, valuesetRepo)->
 
 app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 
-mkSave = ($scope, valuesetRepo, $location)->
+mkSave = ($scope, valuesetRepo, cb)->
   ()->
     user = $scope.auth.auth.user
     entry = $scope.entry
@@ -57,7 +57,7 @@ mkSave = ($scope, valuesetRepo, $location)->
     else
       delete $scope.errors
       entry = valuesetRepo.$save(entry)
-      $location.path("/vs/#{entry.id}")
+      cb(entry)
 
 app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) ->
   u.fixCodeMirror($scope)
@@ -69,17 +69,12 @@ app.controller 'NewValueSetCtrl', ($scope, $firebase, $location, valuesetRepo) -
 
   $scope.$watch 'entry', syncJson, true
 
-  $scope.save = mkSave($scope, valuesetRepo, $location)
+  $scope.save = mkSave $scope, valuesetRepo, (entry)->
+    $location.path("/vs/#{entry.id}")
 
 app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
+  $scope.state = 'info'
   id = $routeParams.id
-  valueset($scope, 'entry', id)
-
-  $scope.remove = ()->
-    valuesetRepo.$remove(id)
-    $location.path("/")
-
-app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo, $location) ->
   u.fixCodeMirror($scope)
 
   id = $routeParams.id
@@ -92,11 +87,18 @@ app.controller 'EditValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo
     $scope.entry = valuesetRepo.$build(v)
 
   syncJson = (x)->
-    $scope.json = x.content.$toJson()
+    if x && x.content
+      $scope.json = x.content.$toJson()
 
   $scope.$watch 'entry', syncJson, true
 
-  $scope.save = mkSave($scope, valuesetRepo, $location)
+  $scope.save = mkSave $scope, valuesetRepo, ()->
+    $scope.state = 'info'
+
+  $scope.remove = ()->
+    valuesetRepo.$remove(id)
+    $location.path("/")
+
 
 app.controller 'BatchCtrl', ($scope, valuesetRepo, $location) ->
   $scope.batch = valuesetRepo.$batch
