@@ -7,10 +7,8 @@
       <a class="btn btn-default" switcher="state" swvalue='json'>json</a>
     </div>
   </h1>
-
   <hr/>
   <div ng-show="state=='info'">
-    <hr/>
     <p><b>id:</b> {{entry.content.identifier}}</p>
     <p><b>publisher:</b> {{entry.content.publisher}}</p>
 
@@ -55,6 +53,9 @@
   </div>
 
   <div ng-show="state == 'json'">
+    <div ng-if="parseError" class="alert alert-danger">
+      {{parseError}}
+    </div>
     <ui-codemirror
     style="min-height: 1000px;"
     ui-codemirror-opts="{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}"

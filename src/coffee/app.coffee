@@ -92,6 +92,16 @@ app.controller 'ShowValueSetCtrl', ($routeParams, $scope, valueset, valuesetRepo
 
   $scope.$watch 'entry', syncJson, true
 
+  $scope.$watch 'json', (x)->
+    return unless x?
+    entry = angular.copy($scope.entry)
+    try
+      entry.content = angular.fromJson(x)
+      delete $scope.parseError
+      $scope.entry = valuesetRepo.$build(entry)
+    catch e
+      $scope.parseError = e.toString()
+
   $scope.save = mkSave $scope, valuesetRepo, ()->
     $scope.state = 'info'
 
