@@ -259,7 +259,7 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "      <td>{{d.definition}}</td>\n" +
     "    </tr>\n" +
     "  </table>\n" +
-    "  <h3>{{entry.content.define.concept.length - 20}} more</h3>\n" +
+    "  <h3>{{entry.content.define.concept | countMore:20 }}</h3>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"entry.content.compose\">\n" +
@@ -274,58 +274,6 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
     "<div ng-if=\"entry.content.expansion\">\n" +
     "  <h1>.expansion</h1>\n" +
     "  <pre>{{entry.content.expansion}}</pre>\n" +
-    "</div>\n"
-  );
-
-
-  $templateCache.put('/src/views/valuesets/edit.html',
-    "<h1 ng-init=\"state='form'\">\n" +
-    "  <span ng-include src=\"'/src/views/valuesets/_header.html'\"></span>\n" +
-    "  <div class=\"btn-group pull-right\">\n" +
-    "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"form\">form</a>\n" +
-    "    <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"json\">json</a>\n" +
-    "    <!-- <a class=\"btn btn-default\" switcher=\"state\" swvalue=\"info\">info</a> -->\n" +
-    "  </div>\n" +
-    "</h1>\n" +
-    "<hr/>\n" +
-    "\n" +
-    "<div ng-show=\"state=='form'\">\n" +
-    "  <form class=\"form-horizontal\" role=\"form\" ng-submit=\"save()\">\n" +
-    "    <div ng-if=\"errors\" class=\"form-group\">\n" +
-    "      <div class=\"col-sm-offset-2 col-sm-10\">\n" +
-    "        <div class=\"alert alert-danger\">\n" +
-    "          <ul>\n" +
-    "            <li ng-repeat=\"(f,e) in errors\">\n" +
-    "            <b>{{f}}</b> {{e}}\n" +
-    "            </li>\n" +
-    "          </ul>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <div ng-include src=\"'/src/views/valuesets/_form_info.html'\"></div>\n" +
-    "    <hr/>\n" +
-    "    <div ng-include src=\"'/src/views/valuesets/_form_definition.html'\"></div>\n" +
-    "    <hr/>\n" +
-    "    <div ng-include src=\"'/src/views/valuesets/_form_compose.html'\"></div>\n" +
-    "    <hr/>\n" +
-    "    <div class=\"form-group\">\n" +
-    "      <div class=\"col-sm-6\">\n" +
-    "        <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-sm-6\">\n" +
-    "        <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </form>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div ng-show=\"state=='json'\">\n" +
-    "  <ui-codemirror\n" +
-    "  style=\"min-height: 1000px;\"\n" +
-    "  ui-codemirror-opts=\"{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}\"\n" +
-    "  ui-refresh=\"state=='json'\"\n" +
-    "  ng-model='vjson'>\n" +
-    "  </ui-codemirror>\n" +
     "</div>\n"
   );
 
@@ -384,31 +332,69 @@ angular.module('fhirface').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('/src/views/valuesets/show.html',
-    "<div ng-switch=\"vm.state\" ng-init=\"vm = {state:'info'}\">\n" +
+    "<div ng-init=\"state ='info'\">\n" +
     "  <h1>\n" +
     "    <span ng-include src=\"'/src/views/valuesets/_header.html'\"></span>\n" +
     "    <div class=\"btn-group pull-right\">\n" +
-    "      <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='info' >info</a>\n" +
-    "      <a class=\"btn btn-default\" switcher=\"vm.state\" swvalue='json'>json</a>\n" +
-    "      <a class=\"btn btn-danger\" ng-click=\"remove()\">remove</a>\n" +
-    "      <a class=\"btn btn-success\" href=\"#/vs/{{entry.id}}/edit\">edit</a>\n" +
+    "      <a class=\"btn btn-default\" switcher=\"state\" swvalue='info' >info</a>\n" +
+    "      <a class=\"btn btn-default\" switcher=\"state\" swvalue='form'>edit</a>\n" +
+    "      <a class=\"btn btn-default\" switcher=\"state\" swvalue='json'>json</a>\n" +
     "    </div>\n" +
     "  </h1>\n" +
-    "  <hr/>\n" +
-    "  <p><b>id:</b> {{entry.content.identifier}}</p>\n" +
-    "  <p><b>publisher:</b> {{entry.content.publisher}}</p>\n" +
-    "\n" +
-    "  <p ng-repeat=\"tel in entry.content.telecom\">\n" +
-    "  <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>\n" +
-    "  </p>\n" +
-    "  <p>{{entry.content.description}}</p>\n" +
     "\n" +
     "  <hr/>\n" +
-    "  <div ng-switch-when=\"info\">\n" +
+    "  <div ng-show=\"state=='info'\">\n" +
+    "    <hr/>\n" +
+    "    <p><b>id:</b> {{entry.content.identifier}}</p>\n" +
+    "    <p><b>publisher:</b> {{entry.content.publisher}}</p>\n" +
+    "\n" +
+    "    <p ng-repeat=\"tel in entry.content.telecom\">\n" +
+    "    <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>\n" +
+    "    </p>\n" +
+    "    <p>{{entry.content.description}}</p>\n" +
     "    <div ng-include src=\"'/src/views/valuesets/_info.html'\"></div>\n" +
     "  </div>\n" +
-    "  <div ng-switch-when=\"json\">\n" +
-    "    <pre> {{entry | json }} </pre>\n" +
+    "\n" +
+    "  <div ng-show=\"state=='form'\">\n" +
+    "    <form class=\"form-horizontal\" role=\"form\" ng-submit=\"save()\">\n" +
+    "      <div ng-if=\"errors\" class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "          <div class=\"alert alert-danger\">\n" +
+    "            <ul>\n" +
+    "              <li ng-repeat=\"(f,e) in errors\">\n" +
+    "              <b>{{f}}</b> {{e}}\n" +
+    "              </li>\n" +
+    "            </ul>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div ng-include src=\"'/src/views/valuesets/_form_info.html'\"></div>\n" +
+    "      <hr/>\n" +
+    "      <div ng-include src=\"'/src/views/valuesets/_form_definition.html'\"></div>\n" +
+    "      <hr/>\n" +
+    "      <div ng-include src=\"'/src/views/valuesets/_form_compose.html'\"></div>\n" +
+    "      <hr/>\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-4\">\n" +
+    "          <button type=\"submit\" class=\"col-sm-12 btn btn-success\"> Save </button>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-4\">\n" +
+    "          <a class=\"col-sm-12 btn btn-danger\" ng-click=\"remove()\">Remove</a>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-4\">\n" +
+    "          <a href=\"#/\" class=\"col-sm-12 btn btn-default\"> Cancel </a>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </form>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <div ng-show=\"state == 'json'\">\n" +
+    "    <ui-codemirror\n" +
+    "    style=\"min-height: 1000px;\"\n" +
+    "    ui-codemirror-opts=\"{mode: 'javascript', lineWrapping: true, lineNumbers: true, json: true, onLoad : codemirror}\"\n" +
+    "    ui-refresh=\"state=='json'\"\n" +
+    "    ng-model='json'>\n" +
+    "    </ui-codemirror>\n" +
     "  </div>\n" +
     "</div>\n"
   );

@@ -98,7 +98,7 @@ var fhirface =
 
 	app.controller('WelcomeCtrl', function($scope, $http, $firebase) {});
 
-	mkSave = function($scope, valuesetRepo, $location) {
+	mkSave = function($scope, valuesetRepo, cb) {
 	  return function() {
 	    var entry, errors, user;
 	    user = $scope.auth.auth.user;
@@ -118,7 +118,7 @@ var fhirface =
 	    } else {
 	      delete $scope.errors;
 	      entry = valuesetRepo.$save(entry);
-	      return $location.path("/vs/" + entry.id);
+	      return cb(entry);
 	    }
 	  };
 	};
@@ -131,21 +131,15 @@ var fhirface =
 	    return $scope.json = x.content.$toJson();
 	  };
 	  $scope.$watch('entry', syncJson, true);
-	  return $scope.save = mkSave($scope, valuesetRepo, $location);
+	  return $scope.save = mkSave($scope, valuesetRepo, function(entry) {
+	    return $location.path("/vs/" + entry.id);
+	  });
 	});
 
 	app.controller('ShowValueSetCtrl', function($routeParams, $scope, valueset, valuesetRepo, $location) {
-	  var id;
-	  id = $routeParams.id;
-	  valueset($scope, 'entry', id);
-	  return $scope.remove = function() {
-	    valuesetRepo.$remove(id);
-	    return $location.path("/");
-	  };
-	});
-
-	app.controller('EditValueSetCtrl', function($routeParams, $scope, valueset, valuesetRepo, $location) {
 	  var id, inited, syncJson;
+	  $scope.state = 'info';
+	  id = $routeParams.id;
 	  u.fixCodeMirror($scope);
 	  id = $routeParams.id;
 	  valueset($scope, 'valuesetOrig', id);
@@ -158,10 +152,18 @@ var fhirface =
 	    return $scope.entry = valuesetRepo.$build(v);
 	  });
 	  syncJson = function(x) {
-	    return $scope.json = x.content.$toJson();
+	    if (x && x.content) {
+	      return $scope.json = x.content.$toJson();
+	    }
 	  };
 	  $scope.$watch('entry', syncJson, true);
-	  return $scope.save = mkSave($scope, valuesetRepo, $location);
+	  $scope.save = mkSave($scope, valuesetRepo, function() {
+	    return $scope.state = 'info';
+	  });
+	  return $scope.remove = function() {
+	    valuesetRepo.$remove(id);
+	    return $location.path("/");
+	  };
 	});
 
 	app.controller('BatchCtrl', function($scope, valuesetRepo, $location) {
@@ -226,6 +228,18 @@ var fhirface =
 	app.filter('sha', function() {
 	  return function(x) {
 	    return sha(x, 'TEXT').getHash("SHA-1", "HEX");
+	  };
+	});
+
+	app.filter('countMore', function() {
+	  return function(x, count) {
+	    var i;
+	    i = Math.max(x.length - count, 0);
+	    if (i > 0) {
+	      return "" + i + " more";
+	    } else {
+	      return "";
+	    }
 	  };
 	});
 
