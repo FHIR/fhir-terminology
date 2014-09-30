@@ -15,7 +15,7 @@
       <td>{{d.definition}}</td>
     </tr>
   </table>
-  <h3>{{entry.content.define.concept.length - 20}} more</h3>
+  <h3>{{entry.content.define.concept | countMore:20 }}</h3>
 </div>
 
 <div ng-if="entry.content.compose">

@@ -22,3 +22,11 @@ app.filter 'csearch', mkfilter('code', 'display', 'definition')
 app.filter 'sha', ()->
   (x)->
     sha(x,'TEXT').getHash("SHA-1", "HEX")
+
+app.filter 'countMore', ()->
+  (x, count)->
+    i = Math.max(x.length - count,0)
+    if i > 0
+      "#{i} more"
+    else
+      ""
