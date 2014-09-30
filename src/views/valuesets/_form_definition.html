@@ -1,24 +1,24 @@
-<a ng-if="!valueset.define" class="btn btn-default" ng-click="valueset.$addDefine()">
+<a ng-if="!entry.content.define" class="btn btn-default" ng-click="entry.content.$addDefine()">
   Add Definition
 </a>
-<div ng-if="valueset.define">
+<div ng-if="entry.content.define">
   <h3>
     Definition
-    <a class="btn btn-danger" ng-click="valueset.$rmDefine()">remove</a>
+    <a class="btn btn-danger" ng-click="entry.content.$rmDefine()">remove</a>
   </h3>
   <hr/>
   <div class="form-group">
     <label class="col-sm-2 control-label">system</label>
     <div class="col-sm-10">
       <input type="text" class="form-control"
-      ng-model="valueset.define.system" placeholder="system"/>
+      ng-model="entry.content.define.system" placeholder="system"/>
     </div>
   </div>
   <div class="form-group">
     <label class="col-sm-2 control-label">version</label>
     <div class="col-sm-10">
       <input type="text" class="form-control"
-      ng-model="valueset.define.version" placeholder="version"/>
+      ng-model="entry.content.define.version" placeholder="version"/>
     </div>
   </div>
   <div class="form-group">
@@ -26,14 +26,14 @@
     <div class="col-sm-10">
       <div class="col-sm-1 checkbox">
         <label>
-          <input type="checkbox" ng-model="valueset.define.caseSensitive"/>
+          <input type="checkbox" ng-model="entry.content.define.caseSensitive"/>
           CaseSensitive
         </label>
       </div>
     </div>
   </div>
   <hr/>
-  <div class="form-group" ng-repeat="concept in valueset.define.concept">
+  <div class="form-group" ng-repeat="concept in entry.content.define.concept">
     <div class="col-sm-1 checkbox">
       <label>
         <input type="checkbox" ng-model="concept.abstract"/>
@@ -50,12 +50,12 @@
       <input type="text" class="form-control" placeholder="display" ng-model="concept.display">
     </div>
     <div class="col-sm-1">
-      <a ng-click="valueset.define.$rmConcept(concept)" class="btn btn-danger col-sm-12"> × </a>
+      <a ng-click="entry.content.define.$rmConcept(concept)" class="btn btn-danger col-sm-12"> × </a>
     </div>
   </div>
   <div class="form-group">
     <div class="col-sm-12">
-      <a ng-click="valueset.define.$addConcept()" class="col-sm-12 btn btn-default">Add Concept</a>
+      <a ng-click="entry.content.define.$addConcept()" class="col-sm-12 btn btn-default">Add Concept</a>
     </div>
   </div>
 </div>

@@ -1,0 +1,17 @@
+<div ng-if="errors" class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <div class="alert alert-danger">
+      <ul>
+        <li ng-repeat="(f,e) in errors">
+        <b>{{f}}</b> {{e}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div ng-include src="'/src/views/valuesets/_form_info.html'"></div>
+<hr/>
+<div ng-include src="'/src/views/valuesets/_form_definition.html'"></div>
+<hr/>
+<div ng-include src="'/src/views/valuesets/_form_compose.html'"></div>
+<hr/>

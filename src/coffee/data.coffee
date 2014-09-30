@@ -26,7 +26,7 @@ app.service 'valuesetRepo', ($firebase)->
   valuesetList = mkchan("#{BASE_URL}/valuesetList")
   list = valuesetList.$asArray()
 
-  $build: (attrs)-> vs.mkValueSet(attrs)
+  $build: (attrs)-> vs.mkEntry(attrs)
 
   $bindListItem: (id, scope, attr)->
     item = mkchan("#{BASE_URL}/valuesetList/#{id}")
@@ -36,21 +36,22 @@ app.service 'valuesetRepo', ($firebase)->
 
   $batch: ()->
     console.log('batch')
+    # for id,v of valuesetList.$asObject()
+    #   if id.indexOf('$') != 0 && v.id && v.id == id
+    #     valuesetList.$set id,
+    #       id: id
+    #       title: v.name
+    #       summary: v.desc
+    #     console.log(id, v)
 
   $remove: (id)->
     for i in list
       list.$remove(i) if i.id == id
     valuesets.$remove(id)
 
-  $create: (v, u)->
-    valuesets.$set(v.id, angular.copy(v))
-    if u
-      user =
-        author: u.displayName
-        avatar: u.thirdPartyUserData.avatar_url
-
-    valuesetList.$set v.id,
-      id:   v.id
-      name: v.content.name
-      desc: v.content.description
-      user: user
+  $save: (entry)->
+    data = entry.$toObject()
+    valuesets.$set(data.id, data)
+    delete data.content
+    valuesetList.$set data.id, data
+    data

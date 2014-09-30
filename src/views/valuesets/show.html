@@ -1,9 +1,27 @@
 <div ng-switch="vm.state" ng-init="vm = {state:'info'}">
-  <div ng-include src="'/src/views/valuesets/_header.html'"></div>
+  <h1>
+    <span ng-include src="'/src/views/valuesets/_header.html'"></span>
+    <div class="btn-group pull-right">
+      <a class="btn btn-default" switcher="vm.state" swvalue='info' >info</a>
+      <a class="btn btn-default" switcher="vm.state" swvalue='json'>json</a>
+      <a class="btn btn-danger" ng-click="remove()">remove</a>
+      <a class="btn btn-success" href="#/vs/{{entry.id}}/edit">edit</a>
+    </div>
+  </h1>
+  <hr/>
+  <p><b>id:</b> {{entry.content.identifier}}</p>
+  <p><b>publisher:</b> {{entry.content.publisher}}</p>
+
+  <p ng-repeat="tel in entry.content.telecom">
+  <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>
+  </p>
+  <p>{{entry.content.description}}</p>
+
+  <hr/>
   <div ng-switch-when="info">
     <div ng-include src="'/src/views/valuesets/_info.html'"></div>
   </div>
   <div ng-switch-when="json">
-    <pre> {{valueset | json }} </pre>
+    <pre> {{entry | json }} </pre>
   </div>
 </div>

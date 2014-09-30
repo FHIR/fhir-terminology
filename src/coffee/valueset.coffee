@@ -9,19 +9,20 @@ _check = (pred, [key,er], ers)->
     ers.$error = true
     ers[key] = er
 
-_validate = (vs)->
+_validate = (entry)->
+  console.log(entry)
   errors = {}
-  _check notEmpty(vs.identifier),  ['identifier', 'is required'], errors
-  _check notEmpty(vs.description), ['description', 'is required'], errors
-  _check notEmpty(vs.name),        ['name', 'is required'], errors
+  _check notEmpty(entry.content.identifier),  ['identifier', 'is required'], errors
+  _check notEmpty(entry.content.description), ['description', 'is required'], errors
+  _check notEmpty(entry.content.name),        ['name', 'is required'], errors
   errors
 
 mkDefine = (attrs)->
   attrs ||= {}
   define = {concept: []}
   methods =
-    $addConcept:  ->
-      define.concept.push {}
+    $addConcept:  (x)->
+      define.concept.push(x || {})
     $rmConcept:  (i)->
       define.concept=u.rm(i,define.concept)
   angular.extend(define, attrs, methods)
@@ -30,10 +31,11 @@ mkConceptSet = (attrs)->
   attrs ||= {}
   set = {code: []}
   methods =
-    $addCode: ()->
-      set.code.push ""
+    $addCode: (x)->
+      set.code.push(x || "")
     $rmCode: (x)->
-      set.code = u.rm(x,set.code)
+      return if x < 0
+      set.code = set.code.splice(x,1)
   angular.extend(set, attrs, methods)
 
 mkCompose = (attrs)->
@@ -54,6 +56,10 @@ mkCompose = (attrs)->
 
   angular.extend(compose, attrs, colls, methods)
 
+# clear all $attrs
+copy = (x)->
+  angular.fromJson(angular.toJson(x))
+
 mkValueSet = (attrs)->
   attrs || = {}
   define = mkDefine(attrs.define)
@@ -61,11 +67,8 @@ mkValueSet = (attrs)->
   valueset = {}
 
   defaults =
-    name: 'MyName'
     version: '0.0.1'
     status: 'draft'
-    identifier: 'myid1'
-
 
   methods =
     $statuses: ['draft','active','retired']
@@ -79,20 +82,29 @@ mkValueSet = (attrs)->
       delete valueset.compose
     $toJson: ()->
       angular.toJson(valueset, true)
-    $validate: ()->
-      _validate(valueset)
-    $toEntry: ()->
-      angular.fromJson(
-        angular.toJson(
-          id: u.sha(valueset.identifier || valueset.name)
-          content: angular.copy(valueset)))
 
   methods.define = define if attrs.define?
   methods.compose = compose if attrs.compose?
 
   angular.extend(valueset, defaults, attrs, methods)
 
+mkEntry = (attrs)->
+  attrs ||= {}
+  vs = mkValueSet(attrs.content)
+  entry = {}
+  angular.extend entry, attrs,
+    content: vs
+    $toJson: ()-> angular.toJson(entry)
+    $validate: ()-> _validate(entry)
+    $toObject: ()->
+      e = copy(entry)
+      e.id = entry.id || u.sha(entry.content.identifier || entry.content.name)
+      e.title = e.content.name
+      e.summary = e.content.description
+      e
+
 exports.mkConceptSet = mkConceptSet
 exports.mkDefine = mkDefine
 exports.mkCompose = mkCompose
 exports.mkValueSet = mkValueSet
+exports.mkEntry = mkEntry

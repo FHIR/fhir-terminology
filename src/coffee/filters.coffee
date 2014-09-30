@@ -15,7 +15,7 @@ mkfilter = (flds...)->
       xs.filter (x)->
         flds.some (fld)-> match(x[fld])
 
-app.filter 'vsearch', mkfilter('name','desc')
+app.filter 'vsearch', mkfilter('title','summary')
 
 app.filter 'csearch', mkfilter('code', 'display', 'definition')
 
