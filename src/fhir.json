@@ -1,0 +1,6 @@
+{
+ "name":"fhirterm",
+ "title": "fhir-terminology",
+ "version": "0.1",
+ "description": "terminology editor"
+}

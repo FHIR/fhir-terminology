@@ -22,3 +22,4 @@ resources/public
 lib/
 .lein-env
 dist/
+fhirvs.tar.gz

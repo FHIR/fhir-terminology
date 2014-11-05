@@ -9,7 +9,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-angular-templates');
   grunt.loadNpmTasks('grunt-webpack');
 
-  var buildDir = process.env.PREFIX || './dist/';
+  var buildDir = (process.env.PREFIX || './dist') + '/';
 
   grunt.initConfig({
     clean: {
@@ -108,15 +108,19 @@ module.exports = function (grunt) {
         src: '*',
         dest: buildDir + 'imgs/'
      },
-     vss: {
-        cwd: 'valuesets/',
-        expand: true,
-        src: '*',
-        dest: buildDir + 'valuesets/'
-     },
+     // vss: {
+     //    cwd: 'valuesets/',
+     //    expand: true,
+     //    src: '*',
+     //    dest: buildDir + 'valuesets/'
+     // },
      index: {
        src: 'src/index.html',
        dest: buildDir + 'index.html'
+     },
+     manifest: {
+       src: 'src/fhir.json',
+       dest: buildDir + 'fhir.json'
      }
     },
     watch: {
