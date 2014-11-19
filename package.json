@@ -5,6 +5,7 @@
   "devDependencies": {
     "firebase":"latest",
     "angularfire": "latest",
+    "codemirror":"latest",
     "bower": "latest",
     "coffee": "latest",
     "jssha": "latest",
@@ -12,6 +13,7 @@
     "css-loader": "latest",
     "extract-text-webpack-plugin": "latest",
     "file-loader": "latest",
+    "url-loader": "latest",
     "html-loader": "latest",
     "karma-jasmine": "~0.2.0",
     "karma": "latest",

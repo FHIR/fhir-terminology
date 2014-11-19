@@ -7,11 +7,14 @@ exports.rm = (x, xs)-> xs.filter (i)-> i != x
 
 exports.fixCodeMirror = ($scope)->
   _editor = null
-  $scope.codemirror = (x)-> _editor = x
+  $scope.codemirror = (x)->
+    _editor = x
 
   $scope.state = 'form'
   $scope.$watch 'state', (st)->
     if st == 'json'
+      $scope.updateCM = false
       $scope.$evalAsync ()->
+        $scope.updateCM = true
         _editor.refresh()
         _editor.focus()

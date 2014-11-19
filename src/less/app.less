@@ -1,12 +1,11 @@
 @import "../../bower_components/bootstrap/less/bootstrap.less";
 @import "../../bower_components/fontawesome/less/font-awesome.less";
+@import (less) "../../node_modules/codemirror/lib/codemirror.css";
 
 @redy: #e62b1e;
 
 .navbar-brand {
-  .icon {
-    color: @redy;
-  }
+  .icon { font-size: 20px; margin: 0; }
 }
 
 .brand {
@@ -20,7 +19,6 @@
   border-bottom-width: 2px;
   border-color: @redy;
   background-color: #f1f1f1;
-  .fa { font-size: 19px; }
 }
 
 .navbar-default .navbar-nav>.active>a {
@@ -86,22 +84,22 @@
   }
 }
 
-// @font-face {
-//   font-family: 'LogosFont';
-//   src: url('../fonts/LogosFont.ttf');
-//   font-weight: normal;
-//   font-style: normal;
-// }
+@font-face {
+  font-family: 'LogosFont';
+  src: url('../fonts/LogosFont.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 
-// .icon {
-//   display: inline-block;
-//   font-family: LogosFont ;
-//   font-style: normal;
-//   font-weight: normal;
-//   line-height: 1;
-//   -webkit-font-smoothing: antialiased;
-//   -moz-osx-font-smoothing: grayscale;
-// }
+.icon {
+  display: inline-block;
+  font-family: LogosFont ;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .navbar-default .navbar-nav>li>a {
   color: #666;

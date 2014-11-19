@@ -13,6 +13,6 @@ app.directive 'switcher', ()->
       else
         element.removeClass(swcls)
 
-    element.click ()->
+    element.on 'click', ()->
       scope.$apply ()->
         scope.switcher = swvalue

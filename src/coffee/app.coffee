@@ -5,8 +5,8 @@ require('file?name=fhir.json!../fhir.json')
 require('../less/app.less')
 
 require('./filters')
-require('./services')
 require('./directives')
+sitemap = require('./sitemap')
 require('./data')
 u = require('./utils')
 
@@ -14,6 +14,7 @@ app.config ($routeProvider) ->
   $routeProvider
     .when '/',
       templateUrl: '/src/views/valuesets/index.html'
+      name: 'root'
       controller: 'WelcomeCtrl'
     .when '/vs/:id',
       templateUrl: '/src/views/valuesets/show.html'
@@ -23,6 +24,7 @@ app.config ($routeProvider) ->
       controller: 'EditValueSetCtrl'
     .when '/new',
       templateUrl: '/src/views/valuesets/new.html'
+      name: 'new'
       controller: 'NewValueSetCtrl'
     .when '/batch',
       templateUrl: '/src/views/batch.html'
@@ -30,22 +32,29 @@ app.config ($routeProvider) ->
     .otherwise
       templateUrl: '/src/view/404.html'
 
-app.run ($q, $rootScope, menu, auth, valuesetRepo)->
-  $rootScope.menu = menu.build(
-    {url: '/', label: 'Value Sets'}
-    {url: '/new', label: 'New', icon: 'add'}
-  )
+activate = (name)->
+  sitemap.main.forEach (x)->
+    if x.name == name
+      x.active = true
+    else
+      delete x.active
+
+app.run ($q, $rootScope, auth, valuesetRepo)->
+  $rootScope.sitemap = sitemap
 
   $rootScope.auth = auth
   $rootScope.valuesets = valuesetRepo.$list()
   $rootScope.batch = ()->
     valuesetRepo.$batch()
 
+  $rootScope.$on  "$routeChangeStart", (event, next, current)->
+    activate(next.name)
+
 app.controller 'WelcomeCtrl', ($scope, $http, $firebase) ->
 
 mkSave = ($scope, valuesetRepo, cb)->
   ()->
-    user = $scope.auth.auth.user
+    user = $scope.auth.user
     entry = $scope.entry
     errors = entry.$validate()
 
@@ -54,8 +63,8 @@ mkSave = ($scope, valuesetRepo, cb)->
       errors.user = "Please login"
     else
       entry.user =
-        author: user.displayName
-        avatar: user.thirdPartyUserData.avatar_url
+        author: user.name
+        avatar: user.avatar_url
 
     if errors.$error
       $scope.errors = errors

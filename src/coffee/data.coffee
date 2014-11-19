@@ -2,12 +2,22 @@ app = require('./module')
 u = require('./utils')
 vs = require('./valueset')
 
-app.service 'auth', ()-> #$firebaseSimpleLogin)->
-  # fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
-  # fba = $firebaseSimpleLogin(fbr)
-  # auth: fba
-  # login:  ()-> fba.$login('github')
-  # logout: ()-> fba.$logout()
+app.service 'auth', ($rootScope, $firebaseAuth)->
+  fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
+  fba = $firebaseAuth(fbr)
+
+  auth ={}
+
+  fba.$onAuth (resp)->
+    if resp && resp.github
+      $rootScope.$apply ()->
+        auth.user = resp.github.cachedUserProfile
+    else
+      delete auth.user
+
+  auth.login =  ()-> fba.$authWithOAuthPopup("github")
+  auth.logout = ()-> fba.$unauth()
+  auth
 
 
 app.service 'valueset', ($firebase)->

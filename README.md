@@ -13,9 +13,9 @@ FHIR value set editor
 git clone git@github.com:FHIR/fhir-terminology.git
 cd fhir-terminology
 npm install
-bower install
-grunt build # or grunt watch in dev mode
-grunt srv
+npm start
+npm run-script fhir
+npm test
 ```
 
 Open locahost:8080 in you browser
