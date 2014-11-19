@@ -10,8 +10,8 @@
     "angular-sanitize": "latest",
     "angular-route": "latest",
     "angular-animate": "latest",
-    "components-font-awesome": "latest",
-    "angular-ui-codemirror": "0.1.6",
-    "ng-fhir": "latest"
+    "fontawesome": "latest",
+    "firebase-simple-login": "latest",
+    "angular-ui-codemirror": "latest"
   }
 }

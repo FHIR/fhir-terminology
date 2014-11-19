@@ -1,4 +1,9 @@
 app = require('./module')
+
+require('file?name=index.html!../index.html')
+require('file?name=fhir.json!../fhir.json')
+require('../less/app.less')
+
 require('./filters')
 require('./services')
 require('./directives')

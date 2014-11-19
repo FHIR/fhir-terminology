@@ -19,7 +19,7 @@ pom.xml.asc
 app/bower_components
 node_modules
 resources/public
-lib/
+bower_components/
 .lein-env
 dist/
 fhirvs.tar.gz

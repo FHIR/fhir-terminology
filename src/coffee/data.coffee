@@ -2,12 +2,12 @@ app = require('./module')
 u = require('./utils')
 vs = require('./valueset')
 
-app.service 'auth', ($firebaseSimpleLogin)->
-  fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
-  fba = $firebaseSimpleLogin(fbr)
-  auth: fba
-  login:  ()-> fba.$login('github')
-  logout: ()-> fba.$logout()
+app.service 'auth', ()-> #$firebaseSimpleLogin)->
+  # fbr = new Firebase('https://fhir-terminology.firebaseio.com/')
+  # fba = $firebaseSimpleLogin(fbr)
+  # auth: fba
+  # login:  ()-> fba.$login('github')
+  # logout: ()-> fba.$logout()
 
 
 app.service 'valueset', ($firebase)->

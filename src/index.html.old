@@ -1,0 +1,61 @@
+<!doctype html>
+<html ng-app="fhirface">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" href="css/lib.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+<div class="brcrmp">
+  <a href="#/">
+    <span class="icon logo" ng-class="{prgrss: (fhir.active > 0)}">&#x4C;</span>
+  </a>
+  <div class="menu-item" ng-repeat="item in menu.items" ng-class="item.active && 'active'">
+    <a href="#{{item.url}}">
+      <i ng-show="item.icon" ng-class="item.icon" class="fa"></i>
+      {{item.label}}
+    </a>
+  </div>
+  <div style="float:right;">
+    <div ng-if="!auth.auth.user" class="menu-item">
+      <a href="#/" ng-click="auth.login()">Login</a>
+    </div>
+    <div ng-if="auth.auth.user" class="menu-item">
+      <a href="javascript:void()">
+        <img class="avatar" ng-src="{{auth.auth.user.thirdPartyUserData.avatar_url}}"/>
+        {{auth.auth.user.displayName}}
+      </a>
+    </div>
+    <div ng-if="auth.auth.user" class="menu-item">
+      <a href="#/" ng-click="auth.logout()">Logout</a>
+    </div>
+    |
+    <a href="https://github.com/fhir/fhir-terminology"><big class="fa fa-github"></big></a>
+    <a href="http://healthsamurai.github.io/"><span class="icon" style="font-size: 20px;">&#x53;</span></a>
+  </div>
+</div>
+
+<div class="cnt">
+  <div ng-view class="view"></div>
+</div>
+
+<script src="js/lib.js"></script>
+<script src="//cdn.firebase.com/js/client/1.0.21/firebase.js"></script>
+<script src="//cdn.firebase.com/js/simple-login/1.6.4/firebase-simple-login.js"></script>
+<script src="//cdn.firebase.com/libs/angularfire/0.8.2/angularfire.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-48979968-4', 'auto');
+ga('send', 'pageview');
+</script>
+</body>
+</html>
