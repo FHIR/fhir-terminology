@@ -1,6 +1,6 @@
 <div ng-init="state ='info'">
   <h1>
-    <span ng-include src="'/src/views/valuesets/_header.html'"></span>
+    <span ng-include src="'/views/valuesets/_header.html'"></span>
     <div class="btn-group pull-right">
       <a class="btn btn-default" switcher="state" swvalue='info' >info</a>
       <a class="btn btn-default" switcher="state" swvalue='form'>edit</a>
@@ -16,7 +16,7 @@
     <b>telecom:</b> {{tel.system}}: {{tel.value}}</p>
     </p>
     <p>{{entry.content.description}}</p>
-    <div ng-include src="'/src/views/valuesets/_info.html'"></div>
+    <div ng-include src="'/views/valuesets/_info.html'"></div>
   </div>
 
   <div ng-show="state=='form'">
@@ -32,11 +32,11 @@
           </div>
         </div>
       </div>
-      <div ng-include src="'/src/views/valuesets/_form_info.html'"></div>
+      <div ng-include src="'/views/valuesets/_form_info.html'"></div>
       <hr/>
-      <div ng-include src="'/src/views/valuesets/_form_definition.html'"></div>
+      <div ng-include src="'/views/valuesets/_form_definition.html'"></div>
       <hr/>
-      <div ng-include src="'/src/views/valuesets/_form_compose.html'"></div>
+      <div ng-include src="'/views/valuesets/_form_compose.html'"></div>
       <hr/>
       <div class="form-group">
         <div class="col-sm-4">

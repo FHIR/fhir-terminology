@@ -20,7 +20,7 @@ module.exports = {
       { test: /\.less$/,   loader: etx.extract("style-loader","css-loader!less-loader")},
       { test: /\.css$/,    loader: etx.extract("style-loader", "css-loader") },
       { test: /\.md$/, loader: "html!markdown" },
-      { test: /views\/.*?\.html$/,   loader: "ng-cache?prefix=/views/" }
+      { test: /views\/.*?\.html$/,   loader: "ng-cache?prefix=/[dir]/[dir]" }
     ]
   },
   plugins: [

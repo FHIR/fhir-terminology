@@ -10,27 +10,29 @@ sitemap = require('./sitemap')
 require('./data')
 u = require('./utils')
 
+require('./views')
+
 app.config ($routeProvider) ->
   $routeProvider
     .when '/',
-      templateUrl: '/src/views/valuesets/index.html'
+      templateUrl: '/views/valuesets/index.html'
       name: 'root'
       controller: 'WelcomeCtrl'
     .when '/vs/:id',
-      templateUrl: '/src/views/valuesets/show.html'
+      templateUrl: '/views/valuesets/show.html'
       controller: 'ShowValueSetCtrl'
     .when '/vs/:id/edit',
-      templateUrl: '/src/views/valuesets/edit.html'
+      templateUrl: '/views/valuesets/edit.html'
       controller: 'EditValueSetCtrl'
     .when '/new',
-      templateUrl: '/src/views/valuesets/new.html'
+      templateUrl: '/views/valuesets/new.html'
       name: 'new'
       controller: 'NewValueSetCtrl'
     .when '/batch',
-      templateUrl: '/src/views/batch.html'
+      templateUrl: '/views/batch.html'
       controller: 'BatchCtrl'
     .otherwise
-      templateUrl: '/src/view/404.html'
+      templateUrl: '/views/404.html'
 
 activate = (name)->
   sitemap.main.forEach (x)->

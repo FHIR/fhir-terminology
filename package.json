@@ -24,7 +24,8 @@
     "phantomjs": "latest",
     "style-loader": "latest",
     "webpack-dev-server": "latest",
-    "webpack": "latest"
+    "webpack": "latest",
+    "fhirbase.js": "latest"
   },
   "engines": {
     "node": ">=0.10.0"
