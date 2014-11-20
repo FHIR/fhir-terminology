@@ -14,7 +14,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'lib/angular/angular.min.js',
+      'bower_components/angular/angular.min.js',
       'test/*.coffee'
     ],
 

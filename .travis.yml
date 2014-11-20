@@ -2,6 +2,5 @@ language: node_js
 node_js: '0.10'
 before_script:
 - 'npm install'
-- '`npm bin`/bower install'
 script:
-- 'node_modules/karma/bin/karma start karma.conf.js --single-run'
+- 'npm test'
