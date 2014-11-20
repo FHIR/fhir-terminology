@@ -23,3 +23,5 @@ bower_components/
 .lein-env
 dist/
 fhirvs.tar.gz
+dist.tar.gz
+dist.tar.gz
