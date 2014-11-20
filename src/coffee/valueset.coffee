@@ -10,7 +10,7 @@ _check = (pred, [key,er], ers)->
     ers[key] = er
 
 _validate = (entry)->
-  console.log(entry)
+  # console.log(entry)
   errors = {}
   _check notEmpty(entry.content.identifier),  ['identifier', 'is required'], errors
   _check notEmpty(entry.content.description), ['description', 'is required'], errors
@@ -57,8 +57,15 @@ mkCompose = (attrs)->
   angular.extend(compose, attrs, colls, methods)
 
 # clear all $attrs
+toJsonReplacer = (key, value)->
+  val = value
+  if typeof key == 'string' && key.charAt(0) == '$'
+    val = undefined
+  else
+    val
+
 copy = (x)->
-  angular.fromJson(angular.toJson(x))
+  angular.fromJson(JSON.stringify(x, toJsonReplacer))
 
 mkValueSet = (attrs)->
   attrs || = {}

@@ -5,6 +5,7 @@
     "angular": "latest",
     "jquery": "latest",
     "bootstrap": "latest",
+    "firebase": "latest",
     "angular-resource": "latest",
     "angular-cookies": "latest",
     "angular-sanitize": "latest",

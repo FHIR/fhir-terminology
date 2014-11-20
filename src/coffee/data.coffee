@@ -58,8 +58,8 @@ app.service 'valuesetRepo', ($firebase)->
 
   $save: (entry)->
     data = entry.$toObject()
-    valuesets.$set(data.id, data)
+    valuesets.$set(data.id ,data)
     delete data.content
-    valuesetList.$set data.id, data
-    audit.$set(dateKey(), {action: 'save', data: data})
+    valuesetList.$set(data.id, data)
+    audit.$set(dateKey(), action: 'save', data: data)
     data
