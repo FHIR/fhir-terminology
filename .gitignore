@@ -21,3 +21,6 @@ node_modules
 resources/public
 lib/
 .lein-env
+dist
+bower_components
+node_modules

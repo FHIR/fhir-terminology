@@ -1,0 +1,64 @@
+<!doctype html>
+<html ng-app="app">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<link rel="shortcut icon" href="imgs/logo.png">
+<link rel="stylesheet" href="app.css" />
+</head>
+<body>
+<!-- Static navbar -->
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/">
+        <span class="icon">S</span>
+        {{::brand}}
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li ng-repeat="item in ::sitemap.main" ng-class="{active: item.active}">
+        <a href="{{::item.href}}">
+          <i ng-if="::item.icon" class="fa fa-{{item.icon}}"></i>
+          {{::item.label}}
+        </a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li ng-if="!auth.user">
+        <a href="#/" ng-click="auth.login()">
+          <i class="fa fa-github"></i>
+          Login
+        </a>
+        </li>
+        <li ng-if="auth.user">
+        <a href="javascript:void()">
+          <img class="avatar" ng-src="{{auth.user.avatar_url}}"/>
+          {{auth.user.name}}
+        </a>
+        </li>
+
+        <li ng-if="auth.user">
+        <a href="#/" ng-click="auth.logout()">Logout</a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>
+
+<div class="view container" ng-view>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
