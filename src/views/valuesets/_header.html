@@ -1,8 +1,8 @@
 <span>
   <img title="{{entry.user.name}}"
        class="avatar" ng-src="{{(entry.user && entry.user.avatar) || 'http://www.hl7.org/implement/standards/fhir/v0.08/flame128.png'}}"/>
-  {{item | json}}
-  {{entry.content.name}}
+  <span>{{item | json}}</span>
+  <span>{{entry.content.name}}</span>
   <a class="btn btn-default">
     <b>v:</b> {{entry.content.version}}
     <span class="badge">{{entry.content.status}}</span>
